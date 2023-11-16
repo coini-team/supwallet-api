@@ -1,15 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+
+import { DappService } from './dapp.service';
 
 @Controller('dapp')
 export class DappController {
+  constructor(private readonly dappService: DappService) {}
   @Get()
   getDapp() {
     return 'First dApp';
@@ -21,8 +16,16 @@ export class DappController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
-  createMessage(@Body('message') message: string) {
-    return `The message:_ ${message}`;
+  createWallet(@Body('token') token: string) {
+    if (token) {
+      console.log('Auth Token validation here');
+    }
+    const wallet = this.dappService.createRandomWallet();
+    const res = {
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+      seedphrase: wallet.mnemonic.phrase,
+    };
+    return res;
   }
 }
