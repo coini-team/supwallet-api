@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HDNodeWallet, Wallet } from 'ethers';
+import { ContractFactory, HDNodeWallet, Wallet } from 'ethers';
 
 @Injectable()
 export class DappService {
@@ -9,5 +9,35 @@ export class DappService {
     console.log(`Private Key: ${randomWallet.privateKey}`);
 
     return randomWallet;
+  }
+
+  async deployERC20Token(
+    wallet: Wallet,
+    tokenParams: { name: string; symbol: string; supply: number },
+  ): Promise<string> {
+    const { name, symbol, supply } = tokenParams;
+
+    //Bytecode del contrato generador
+    const erc20Bytecode = '0x606060...'; //reemplazar
+
+    const factory = new ContractFactory(
+      ['constructor(string,string,uint256)'],
+      erc20Bytecode,
+      wallet,
+    );
+    const contract = await factory.deploy(name, symbol, supply);
+
+    //wait contract deploy
+    await contract.waitForDeployment();
+
+    //contract address
+    const contractAddress = contract.getAddress();
+
+    console.log(`Deployed ERC-20 Contract Address: ${contractAddress}`);
+    console.log(`Token Name: ${name}`);
+    console.log(`Token Symbol: ${symbol}`);
+    console.log(`Total Supply: ${supply}`);
+
+    return contractAddress;
   }
 }
