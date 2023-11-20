@@ -40,4 +40,33 @@ export class DappService {
 
     return contractAddress;
   }
+
+  async deployERC721Token(
+    wallet: Wallet,
+    tokenParams: { name: string; symbol: string },
+  ): Promise<string> {
+    const { name, symbol } = tokenParams;
+
+    const erc721Bytecode = '0x606060...';
+
+    const factory = new ContractFactory(
+      ['constructor(string,string)'],
+      erc721Bytecode,
+      wallet,
+    );
+    const contract = await factory.deploy(name, symbol);
+
+    //wait contract deploy
+    await contract.waitForDeployment();
+
+    //contract address
+    const contractAddress = contract.getAddress();
+
+    console.log(`Deployed ERC-721 Contract Address: ${contractAddress}`);
+    console.log(`Token Name: ${name}`);
+    console.log(`Token Symbol: ${symbol}`);
+
+    // Return the contract address
+    return contractAddress;
+  }
 }

@@ -39,21 +39,47 @@ export class DappController {
 
   @Post('api/token')
   @HttpCode(HttpStatus.CREATED)
-  async deployERC20Token(
-    @Body() tokenParams: { name: string; symbol: string; supply: number },
+  async deployToken(
+    @Body()
+    tokenParams: {
+      type: string;
+      name: string;
+      symbol: string;
+      supply: number;
+    },
   ) {
     //authentication logic
 
     //get wallet to sign
     const wallet = this.getWallet();
+    let contractAddress: Promise<string>;
+    if (tokenParams.type == 'ERC20') {
+      contractAddress = this.deployERC20Token(tokenParams, wallet);
+    } else if (tokenParams.type == 'ERC721') {
+      contractAddress = this.deployERC721Token(tokenParams, wallet);
+    }
 
+    return { contractAddress };
+  }
+
+  async deployERC20Token(tokenParams: any, wallet: any) {
     //call method to deploy the ERC20 token
     const contractAddress = await this.dappService.deployERC20Token(
       wallet,
       tokenParams,
     );
 
-    return { contractAddress };
+    return contractAddress;
+  }
+
+  async deployERC721Token(tokenParams: any, wallet: any) {
+    //call method to deploy the ERC20 token
+    const contractAddress = await this.dappService.deployERC721Token(
+      wallet,
+      tokenParams,
+    );
+
+    return contractAddress;
   }
 
   private getWallet(): any {
