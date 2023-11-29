@@ -83,8 +83,6 @@ export class DappController {
   }
 
   private getWallet(): any {
-    // implement logic to retrieve wallet of the user
-    // now it creates with random method
-    return this.dappService.createRandomWallet();
+    return this.dappService.getWallet();
   }
 }
