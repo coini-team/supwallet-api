@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HDNodeWallet, Wallet, ethers } from 'ethers';
+import { Contract, HDNodeWallet, Wallet, ethers } from 'ethers';
 
 @Injectable()
 export class DappService {
@@ -29,6 +29,88 @@ export class DappService {
   ): Promise<string> {
     const { name, symbol, supply } = tokenParams;
     const methodName = 'CreateNewERC20(string,string,uint256)';
+
+    const contract = await this.getERC20Contract(wallet);
+
+    try {
+      const result = await contract[methodName](name, symbol, supply);
+      console.log(`Smart Contract Method "${methodName}" Result:`, result);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deployERC721Token(
+    wallet: Wallet,
+    tokenParams: { name: string; symbol: string },
+  ): Promise<string> {
+    const { name, symbol } = tokenParams;
+
+    const methodName = 'createNewContract(string,string)';
+
+    const contract = await this.getERC721Contract(wallet);
+
+    try {
+      const result = await contract[methodName](name, symbol);
+      console.log(`Smart Contract Method "${methodName}" Result:`, result);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getERC721Contract(wallet: Wallet): Promise<Contract> {
+    const abi = [
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_name",
+            "type": "string"
+          },
+          {
+            "name": "_symbol",
+            "type": "string"
+          },
+        ],
+        "name": "createNewContract",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "contractAddress",
+            "type": "address"
+          }
+        ],
+        "name": "NewContract",
+        "type": "event"
+      },
+    ];
+
+    const contract = new ethers.Contract(
+      this.ERC721FactoryAddress,
+      abi,
+      wallet,
+    );
+
+    return contract;
+  }
+
+  async getERC20Contract(wallet: Wallet): Promise<Contract> {
     const abi = [
       {
         "constant": false,
@@ -58,66 +140,16 @@ export class DappService {
         "type": "function"
       }
     ];
-    typeof methodName;
-    console.log('wallet', wallet);
+
     const contract = new ethers.Contract(this.ERC20FactoryAddress, abi, wallet);
 
-    try {
-      const result = await contract[methodName](name, symbol, supply);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
-
-      return result;
-    } catch (error) {
-      throw error;
-    }
+    return contract;
   }
 
-  async deployERC721Token(
-    wallet: Wallet,
-    tokenParams: { name: string; symbol: string },
-  ): Promise<string> {
-    const { name, symbol } = tokenParams;
-
-    const abi = [
-      {
-        "constant": false,
-        "inputs": [
-          {
-            "name": "_name",
-            "type": "string"
-          },
-          {
-            "name": "_symbol",
-            "type": "string"
-          },
-        ],
-        "name": "createNewContract",
-        "outputs": [
-          {
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ];
-    const methodName = 'createNewContract(string,string)';
-
-    const contract = new ethers.Contract(
-      this.ERC721FactoryAddress,
-      abi,
-      wallet,
-    );
-
-    try {
-      const result = await contract[methodName](name, symbol);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
-
-      return result;
-    } catch (error) {
-      throw error;
-    }
+  async listenForEvent() {
+    const contract = await this.getERC721Contract(this.getWallet());
+    contract.on('NewContract', (contractAddress) => {
+      console.log('Event received:', contractAddress);
+    });
   }
 }
