@@ -4,7 +4,7 @@ import { Contract, HDNodeWallet, Wallet, ethers } from 'ethers';
 @Injectable()
 export class DappService {
   private readonly ERC20FactoryAddress =
-    '0x07f6F71394109e191728d9d23b8e230F2FcA743E';
+    '0xBcD9B030061b4FcfFc7Cc3f58Fd6EDE65B99748e';
   private readonly ERC721FactoryAddress =
     '0x7665ca8bDf738423BE54736c4796E1505D74d09d';
   private readonly walletPrivateKey: string;
@@ -138,7 +138,24 @@ export class DappService {
         "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
-      }
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "name": "erc20TokenAddress",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "index",
+            "type": "uint256"
+          }
+        ],
+        "name": "NewERC20TokenContract",
+        "type": "event"
+      },
     ];
 
     const contract = new ethers.Contract(this.ERC20FactoryAddress, abi, wallet);
@@ -147,9 +164,16 @@ export class DappService {
   }
 
   async listenForEvent() {
-    const contract = await this.getERC721Contract(this.getWallet());
-    contract.on('NewContract', (contractAddress) => {
+    console.log(':::Listening for contract events:::');
+    const contractERC721 = await this.getERC721Contract(this.getWallet());
+    contractERC721.on('NewContract', (contractAddress) => {
       console.log('Event received:', contractAddress);
+    });
+
+    const contractERC20 = await this.getERC20Contract(this.getWallet());
+    contractERC20.on('NewERC20TokenContract', (erc20TokenAddress, index) => {
+      console.log('Event received:', erc20TokenAddress);
+      console.log('Array index:', index);
     });
   }
 }
