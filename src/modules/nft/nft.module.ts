@@ -5,7 +5,7 @@ import { Module } from '@nestjs/common';
 import { NftController } from './controllers/nft.controller';
 import { ConfigModule } from '../../config/config.module';
 import { NftService } from './services/nft.service';
-import { WalletModule } from "../wallet/wallet.module";
+import { WalletModule } from '../wallet/wallet.module';
 
 @Module({
   imports: [ConfigModule, WalletModule],

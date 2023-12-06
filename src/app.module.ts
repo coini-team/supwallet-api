@@ -11,7 +11,13 @@ import { Configuration } from './config/config.keys';
 import { NftModule } from './modules/nft/nft.module';
 
 @Module({
-  imports: [ConfigModule, TokenModule, NftModule, NotificationsModule, WalletModule],
+  imports: [
+    ConfigModule,
+    TokenModule,
+    NftModule,
+    NotificationsModule,
+    WalletModule,
+  ],
   controllers: [],
   providers: [],
 })
