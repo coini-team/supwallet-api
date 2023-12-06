@@ -4,7 +4,7 @@ import { HDNodeWallet, Wallet, ethers } from 'ethers';
 @Injectable()
 export class DappService {
   private readonly ERC20FactoryAddress =
-    '0x07f6F71394109e191728d9d23b8e230F2FcA743E';
+    '0xE2B580433Bc05Ac3cEfF0041654c4176149Cb7c0';
   private readonly ERC721FactoryAddress =
     '0x7665ca8bDf738423BE54736c4796E1505D74d09d';
   private readonly walletPrivateKey: string;
@@ -28,48 +28,156 @@ export class DappService {
     tokenParams: { name: string; symbol: string; supply: number },
   ): Promise<string> {
     const { name, symbol, supply } = tokenParams;
-    const methodName = 'CreateNewERC20(string,string,uint256)';
+    const methodName = 'CreateNewERC20Token(string,string,uint256)';
+
     const abi = [
       {
-        "constant": false,
+        "anonymous": false,
         "inputs": [
           {
-            "name": "_name",
-            "type": "string"
+            "indexed": false,
+            "internalType": "address",
+            "name": "erc20TokenAddress",
+            "type": "address"
           },
           {
-            "name": "_symbol",
-            "type": "string"
-          },
-          {
-            "name": "_supply",
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "index",
             "type": "uint256"
           }
         ],
-        "name": "CreateNewERC20",
+        "name": "NewERC20TokenContract",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "initialSupply",
+            "type": "uint256"
+          }
+        ],
+        "name": "CreateNewERC20Token",
         "outputs": [
           {
+            "internalType": "address",
             "name": "",
             "type": "address"
           }
         ],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
       }
     ];
-    typeof methodName;
+
+    //typeof methodName;
     console.log('wallet', wallet);
     const contract = new ethers.Contract(this.ERC20FactoryAddress, abi, wallet);
 
     try {
-      const result = await contract[methodName](name, symbol, supply);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
-
-      return result;
+      const tx = await contract[methodName](name, symbol, supply);
+      var response = await tx.wait();
+      console.log(`Smart Contract Method "${methodName}" ContractTransactionResponse:`, tx);
+      console.log(`Smart Contract Method "${methodName}" ContractTransactionReceipt:`, response);
+      console.log(`Smart Contract Method "${methodName}" logs:`, response.logs);
+      var address = response.logs[0].address;
+      console.log(address);
+      return address;
     } catch (error) {
+      console.log(error);
       throw error;
     }
+  }
+
+  async balanceOfERC20Token(
+    wallet: Wallet,
+    addressERC20: string,
+    account: string
+  ): Promise<string> {
+
+    const abi = [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ];
+
+    console.log('wallet', wallet);
+    const contract = new ethers.Contract(addressERC20, abi, wallet);
+    var balance = await contract.balanceOf(account);
+    console.log("addressERC20: " + addressERC20);
+    console.log("account: " + account);
+    console.log("balance: " + balance);
+    return balance;
+  }
+
+  async transferERC20Token(
+    wallet: Wallet,
+    addressERC20: string,
+    to: string,
+    value: number
+  ): Promise<void> {
+
+    const abi = [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+          }
+        ],
+        "name": "transfer",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
+    console.log('wallet', wallet);
+    const contract = new ethers.Contract(addressERC20, abi, wallet);
+    var balance = await contract.transfer(to, value);
+    console.log("addressERC20: " + addressERC20);
+    console.log("to: " + to);
+    console.log("value: " + value);
+    return;
   }
 
   async deployERC721Token(

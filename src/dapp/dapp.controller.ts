@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 
 import { DappService } from './dapp.service';
@@ -52,17 +53,39 @@ export class DappController {
 
     //get wallet to sign
     const wallet = this.getWallet();
-    let contractAddress: Promise<string>;
+    let contractAddress: string;
     if (tokenParams.type == 'ERC20') {
-      contractAddress = this.deployERC20Token(tokenParams, wallet);
+      contractAddress = await this.deployERC20Token(tokenParams, wallet);
     } else if (tokenParams.type == 'ERC721') {
-      contractAddress = this.deployERC721Token(tokenParams, wallet);
+      contractAddress = await this.deployERC721Token(tokenParams, wallet);
     }
 
     return { contractAddress };
   }
 
-  async deployERC20Token(tokenParams: any, wallet: any) {
+  @Post('api/erc20/balanceOf')
+  async balanceOfERC20Token(@Body('addressERC20') addressERC20: string, @Body('account') account: string){
+    const wallet = this.getWallet();
+    console.log('addressERC20 Init: ' + addressERC20);
+    console.log('account Init: ' + account);
+    var balance = await this.dappService.balanceOfERC20Token(wallet, addressERC20, account);
+    console.log('balanceController: ' + balance);
+    console.log(typeof balance);
+    balance = balance.toString();
+    return { balance };
+  }
+
+  @Post('api/erc20/transfer')
+  async transferERC20Token(@Body('addressERC20') addressERC20: string, @Body('to') to: string, @Body('value') value: number){
+    const wallet = this.getWallet();
+    console.log('addressERC20 Init: ' + addressERC20);
+    console.log('to Init: ' + to);
+    console.log('value Init: ' + value);
+    await this.dappService.transferERC20Token(wallet, addressERC20, to, value);
+    return { };
+  }
+
+  async deployERC20Token(tokenParams: any, wallet: any) : Promise<string>{
     //call method to deploy the ERC20 token
     const contractAddress = await this.dappService.deployERC20Token(
       wallet,
