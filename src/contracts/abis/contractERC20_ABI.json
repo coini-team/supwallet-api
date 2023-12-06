@@ -1,0 +1,29 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "name": "_supply",
+        "type": "uint256"
+      }
+    ],
+    "name": "CreateNewERC20",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
