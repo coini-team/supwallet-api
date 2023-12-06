@@ -30,14 +30,72 @@ export class DappService {
     const { name, symbol, supply } = tokenParams;
     const methodName = 'CreateNewERC20Token(string,string,uint256)';
 
-    const contract = await this.getERC20Contract(wallet);
+    const abi = [
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": false,
+            "internalType": "address",
+            "name": "erc20TokenAddress",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          }
+        ],
+        "name": "NewERC20TokenContract",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "initialSupply",
+            "type": "uint256"
+          }
+        ],
+        "name": "CreateNewERC20Token",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
+    //typeof methodName;
+    console.log('wallet', wallet);
+    const contract = new ethers.Contract(this.ERC20FactoryAddress, abi, wallet);
 
     try {
-      const result = await contract[methodName](name, symbol, supply);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
-
-      return result;
+      const tx = await contract[methodName](name, symbol, supply);
+      var response = await tx.wait();
+      console.log(`Smart Contract Method "${methodName}" ContractTransactionResponse:`, tx);
+      console.log(`Smart Contract Method "${methodName}" ContractTransactionReceipt:`, response);
+      console.log(`Smart Contract Method "${methodName}" logs:`, response.logs);
+      var address = response.logs[0].address;
+      console.log(address);
+      return address;
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
