@@ -24,10 +24,10 @@ export class TokenService {
 
     try {
       const tx = await contract[methodName](name, symbol, supply);
-      const result = await tx.wait();
+      const response = await tx.wait();
       console.log(`Smart Contract Method "${methodName}" tx:`, tx);
-      console.log(`Smart Contract Method "${methodName}" result:`, result);
-      const address = result.logs[0].address;
+      console.log(`Smart Contract Method "${methodName}" response:`, response);
+      const address = response.logs[0].address;
 
       return address;
     } catch (error) {
