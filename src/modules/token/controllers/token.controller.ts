@@ -1,5 +1,13 @@
 // Third Party Dependencies.
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 
 // Local Dependencies.
 import { WalletService } from '../../wallet/services/wallet.service';
