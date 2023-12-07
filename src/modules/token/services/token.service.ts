@@ -3,7 +3,8 @@ import { Contract, ethers, Wallet } from 'ethers';
 import { Injectable } from '@nestjs/common';
 
 // Local Dependencies.
-import contractERC20_ABI from '../../../contracts/abis/contractERC20_ABI.json';
+import ERC20_ABI from '../../../contracts/abis/ERC20_ABI.json';
+import FactoryERC20_ABI from '../../../contracts/abis/FactoryERC20_ABI.json';
 import { ConfigService } from '../../../config/config.service';
 import { Blockchain } from '../../../config/config.keys';
 
@@ -16,75 +17,29 @@ export class TokenService {
     tokenParams: { name: string; symbol: string; supply: number },
   ): Promise<string> {
     const { name, symbol, supply } = tokenParams;
-    const methodName = 'CreateNewERC20Token(string,string,uint256)';
-    console.log('wallet', wallet);
-    const contract = new ethers.Contract(
-      this.configService.get(Blockchain.ERC20_FACTORY_ADDRESS),
-      contractERC20_ABI,
-      wallet,
-    );
+    const methodName = 'CreateNewERC20Token';
+    
+    //console.log('wallet', wallet);
+    const contract = this.getFactoryERC20Contract(wallet);
 
     try {
-      const result = await contract[methodName](name, symbol, supply);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
+      const tx = await contract[methodName](name, symbol, supply);
+      const response = await tx.wait();
+      console.log(`Smart Contract Method "${methodName}" tx:`, tx);
+      console.log(`Smart Contract Method "${methodName}" response:`, response);
+      const address = response.logs[0].address;
 
-      return result;
+      return address;
     } catch (error) {
       throw error;
     }
   }
 
-  async getERC20Contract(wallet: Wallet): Promise<Contract> {
-    const abi = [
-      {
-        constant: false,
-        inputs: [
-          {
-            name: '_name',
-            type: 'string',
-          },
-          {
-            name: '_symbol',
-            type: 'string',
-          },
-          {
-            name: '_supply',
-            type: 'uint256',
-          },
-        ],
-        name: 'CreateNewERC20',
-        outputs: [
-          {
-            name: '',
-            type: 'address',
-          },
-        ],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            indexed: false,
-            name: 'erc20TokenAddress',
-            type: 'address',
-          },
-          {
-            indexed: false,
-            name: 'index',
-            type: 'uint256',
-          },
-        ],
-        name: 'NewERC20TokenContract',
-        type: 'event',
-      },
-    ];
+  getFactoryERC20Contract(wallet: Wallet): Contract {
 
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC20_FACTORY_ADDRESS),
-      abi,
+      FactoryERC20_ABI,
       wallet,
     );
 
@@ -96,30 +51,9 @@ export class TokenService {
     addressERC20: string,
     account: string,
   ): Promise<string> {
-    const abi = [
-      {
-        inputs: [
-          {
-            internalType: 'address',
-            name: 'account',
-            type: 'address',
-          },
-        ],
-        name: 'balanceOf',
-        outputs: [
-          {
-            internalType: 'uint256',
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ];
 
-    console.log('wallet', wallet);
-    const contract = new ethers.Contract(addressERC20, abi, wallet);
+    //console.log('wallet', wallet);
+    const contract = new ethers.Contract(addressERC20, ERC20_ABI, wallet);
     const balance = await contract.balanceOf(account);
 
     console.log(
@@ -142,35 +76,9 @@ export class TokenService {
     to: string,
     value: number,
   ): Promise<void> {
-    const abi = [
-      {
-        inputs: [
-          {
-            internalType: 'address',
-            name: 'to',
-            type: 'address',
-          },
-          {
-            internalType: 'uint256',
-            name: 'value',
-            type: 'uint256',
-          },
-        ],
-        name: 'transfer',
-        outputs: [
-          {
-            internalType: 'bool',
-            name: '',
-            type: 'bool',
-          },
-        ],
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
-    ];
 
-    console.log('wallet: ', wallet);
-    const contract = new ethers.Contract(addressERC20, abi, wallet);
+    //console.log('wallet: ', wallet);
+    const contract = new ethers.Contract(addressERC20, ERC20_ABI, wallet);
     await contract.transfer(to, value);
     console.log(
       'addressERC20: ' +
