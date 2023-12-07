@@ -28,7 +28,7 @@ export class NotificationsService {
       console.log('Event received:', contractAddress);
     });
 
-    const contractERC20 = await this.tokenService.getERC20Contract(
+    const contractERC20 = this.tokenService.getFactoryERC20Contract(
       this.walletService.getWallet(),
     );
     contractERC20.on('NewERC20TokenContract', (erc20TokenAddress, index) => {
