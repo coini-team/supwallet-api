@@ -31,11 +31,9 @@ export class NftService {
       contractERC721_ABI,
       wallet,
     );
-
     try {
       const result = await contract[methodName](name, symbol);
-      console.log(`Smart Contract Method "${methodName}" Result:`, result);
-
+      console.log(`ERC721 Smart Contract Method "${methodName}" Result:`, result);
       return result;
     } catch (error) {
       throw error;

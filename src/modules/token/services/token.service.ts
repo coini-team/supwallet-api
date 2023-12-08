@@ -12,7 +12,7 @@ import { Blockchain } from '../../../config/config.keys';
 export class TokenService {
   constructor(private readonly configService: ConfigService) {}
 
-  async deployERC20Token(
+  async deployERC20Token_(
     wallet: Wallet,
     tokenParams: { name: string; symbol: string; supply: number },
   ): Promise<string> {
@@ -30,6 +30,27 @@ export class TokenService {
       const address = response.logs[0].address;
 
       return address;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deployERC20Token(
+    wallet: Wallet,
+    tokenParams: { name: string; symbol: string; initialSupply: number },
+  ): Promise<string> {
+    const { name, symbol, initialSupply } = tokenParams;
+    const methodName = 'CreateNewERC20Token(string,string,uint256)';
+
+    const contract = new ethers.Contract(
+      this.configService.get(Blockchain.ERC20_FACTORY_ADDRESS),
+      FactoryERC20_ABI,
+      wallet,
+    );
+    try {
+      const result = await contract[methodName](name, symbol, initialSupply);
+      console.log(`ERC20 Smart Contract Method "${methodName}" Result:`, result);
+      return result;
     } catch (error) {
       throw error;
     }

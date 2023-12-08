@@ -26,7 +26,7 @@ export class TokenController {
    * @param {Object} tokenParams - Token Parameters.
    * @returns {string} - Contract Address.
    */
-  @Post('deploy')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   async deployERC20Token(
     @Body()
@@ -34,7 +34,7 @@ export class TokenController {
       type: string;
       name: string;
       symbol: string;
-      supply: number;
+      initialSupply: number;
     },
   ): Promise<string> {
     // Get Wallet to Sign.
