@@ -26,7 +26,7 @@ export class NftController {
    * @param {Object} tokenParams - Token Parameters.
    * @returns {string} - Contract Address.
    */
-  @Post('deploy')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   public async deployERC721Token(
     @Body()

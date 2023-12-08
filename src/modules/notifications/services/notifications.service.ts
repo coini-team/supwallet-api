@@ -20,20 +20,20 @@ export class NotificationsService {
    * @returns {Promise<void>}
    */
   async listenForEvent() {
-    console.log(':::Listening for contract events:::');
-    const contractERC721 = await this.nftService.getERC721Contract(
-      this.walletService.getWallet(),
-    );
-    contractERC721.on('NewContract', (contractAddress) => {
-      console.log('Event received:', contractAddress);
-    });
+    // console.log(':::Listening for contract events:::');
+    // const contractERC721 = await this.nftService.getERC721Contract(
+    //   this.walletService.getWallet(),
+    // );
+    // contractERC721.on('NewContract', (contractAddress) => {
+    //   console.log('Event received:', contractAddress);
+    // });
 
-    const contractERC20 = this.tokenService.getFactoryERC20Contract(
-      this.walletService.getWallet(),
-    );
-    contractERC20.on('NewERC20TokenContract', (erc20TokenAddress, index) => {
-      console.log('Event received:', erc20TokenAddress);
-      console.log('Array index:', index);
-    });
+    // const contractERC20 = this.tokenService.getFactoryERC20Contract(
+    //   this.walletService.getWallet(),
+    // );
+    // contractERC20.on('NewERC20TokenContract', (erc20TokenAddress, index) => {
+    //   console.log('Event received:', erc20TokenAddress);
+    //   console.log('Array index:', index);
+    // });
   }
 }
