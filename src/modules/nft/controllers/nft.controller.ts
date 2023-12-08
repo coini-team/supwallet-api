@@ -1,5 +1,13 @@
 // Third Party Dependencies.
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 
 // Local Dependencies.
 import { NftService } from '../services/nft.service';
@@ -39,5 +47,30 @@ export class NftController {
     );
 
     return contractAddress;
+  }
+
+  @Get('owner/:tokenId')
+  async getOwnerOfERC721Token(@Param('tokenId') tokenId: string) {
+    const owner = await this.nftService.ownerOfERC721(tokenId);
+    return { owner };
+  }
+
+  @Get('token_URI/:tokenId')
+  async getUriOfToken(@Param('tokenId') tokenId: string) {
+    const tokenURI = await this.nftService.getTokenURI(tokenId);
+    return { tokenURI };
+  }
+
+  @Post(':tokenId/set-uri')
+  async setTokenURI(
+    @Param('tokenId') tokenId: number,
+    @Body('tokenURI') tokenURI: string,
+  ): Promise<void> {
+    await this.nftService.setTokenURI(tokenId, tokenURI);
+  }
+
+  @Get(':tokenId/owner')
+  async getOwnerOfToken(@Param('tokenId') tokenId: number): Promise<string> {
+    return this.nftService.getOwnerOfToken(tokenId);
   }
 }
