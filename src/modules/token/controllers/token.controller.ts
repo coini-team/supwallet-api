@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 
 // Local Dependencies.
@@ -48,31 +49,32 @@ export class TokenController {
     return contractAddress;
   }
 
+  // TODO: fix BigNumberish
   @Post('transfer')
   public async transferERC20Token(
-    @Body('addressERC20') addressERC20: string,
+    @Body('address') address: string,
     @Body('to') to: string,
     @Body('value') value: number,
   ) {
     const wallet = this.walletService.getWallet();
-    console.log('addressERC20 Init: ' + addressERC20);
+    console.log('addressERC20 Init: ' + address);
     console.log('to Init: ' + to);
     console.log('value Init: ' + value);
-    await this.tokenService.transferERC20Token(wallet, addressERC20, to, value);
+    await this.tokenService.transferERC20Token(wallet, address, to, value);
     return {};
   }
 
-  @Post('balanceOf')
+  @Get('balance')
   async balanceOfERC20Token(
-    @Body('addressERC20') addressERC20: string,
-    @Body('account') account: string,
+    @Query('address') address: string,
+    @Query('account') account: string,
   ) {
-    const wallet = this.walletService.getWallet();
-    console.log('addressERC20 Init: ' + addressERC20);
+    console.log('addressERC20 Init: ' + address);
     console.log('account Init: ' + account);
+    const wallet = this.walletService.getWallet();
     let balance = await this.tokenService.balanceOfERC20Token(
       wallet,
-      addressERC20,
+      address,
       account,
     );
     console.log('balanceController: ' + balance);

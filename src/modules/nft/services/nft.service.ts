@@ -3,7 +3,7 @@ import { Contract, ethers, Wallet } from 'ethers';
 import { Injectable } from '@nestjs/common';
 
 // Local Dependencies.
-import contractERC721_ABI from '../../../contracts/abis/contractERC721_ABI.json';
+import FactoryERC721_ABI from '../../../contracts/abis/FactoryERC721_ABI.json';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { ConfigService } from '../../../config/config.service';
 import { Blockchain } from '../../../config/config.keys';
@@ -28,7 +28,7 @@ export class NftService {
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC721_FACTORY_ADDRESS),
-      contractERC721_ABI,
+      FactoryERC721_ABI,
       wallet,
     );
     try {
