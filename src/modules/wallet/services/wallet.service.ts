@@ -18,7 +18,6 @@ export class WalletService {
       this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
       provider,
     );
-    console.log('=> wallet:', wallet);
     return wallet;
   }
 

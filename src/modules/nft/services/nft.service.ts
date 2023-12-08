@@ -26,10 +26,8 @@ export class NftService {
   ): Promise<string> {
     const { name, symbol } = tokenParams;
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
-
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC721_FACTORY_ADDRESS),
-      // TODO: Change this to the correct ABI.
       contractERC721_ABI,
       wallet,
     );
