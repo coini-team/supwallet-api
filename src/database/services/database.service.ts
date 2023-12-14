@@ -24,6 +24,7 @@ export const databaseProviders = [
         database: config.get(Configuration.DB_NAME),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        seeds: ['dist/db/seeds/**/*{.ts,.js}'],
       } as ConnectionOptions;
     },
   }),

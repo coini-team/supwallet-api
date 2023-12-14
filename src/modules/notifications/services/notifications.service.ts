@@ -27,7 +27,6 @@ export class NotificationsService {
     // contractERC721.on('NewContract', (contractAddress) => {
     //   console.log('Event received:', contractAddress);
     // });
-
     // const contractERC20 = this.tokenService.getFactoryERC20Contract(
     //   this.walletService.getWallet(),
     // );
