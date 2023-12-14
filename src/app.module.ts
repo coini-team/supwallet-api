@@ -9,14 +9,18 @@ import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
 import { Configuration } from './config/config.keys';
 import { NftModule } from './modules/nft/nft.module';
+import { DatabaseModule } from './database/database.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
+    DatabaseModule,
     ConfigModule,
     TokenModule,
     NftModule,
     NotificationsModule,
     WalletModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
