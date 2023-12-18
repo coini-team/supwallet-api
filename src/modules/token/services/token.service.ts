@@ -26,7 +26,10 @@ export class TokenService {
     );
     try {
       const result = await contract[methodName](name, symbol, initialSupply);
-      console.log(`ERC20 Smart Contract Method "${methodName}" Result:`, result);
+      console.log(
+        `ERC20 Smart Contract Method "${methodName}" Result:`,
+        result,
+      );
       return result;
     } catch (error) {
       throw error;
@@ -34,7 +37,6 @@ export class TokenService {
   }
 
   getFactoryERC20Contract(wallet: Wallet): Contract {
-
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC20_FACTORY_ADDRESS),
       FactoryERC20_ABI,
@@ -49,14 +51,13 @@ export class TokenService {
     address: string,
     account: string,
   ): Promise<string> {
-
     //console.log('wallet', wallet);
     const contract = new ethers.Contract(address, ERC20_ABI, wallet);
     const balance = await contract.balanceOf(account);
 
     console.log(
       'addressERC20: ' +
-      address +
+        address +
         '\n' +
         'account: ' +
         account +
@@ -74,13 +75,12 @@ export class TokenService {
     to: string,
     value: number,
   ): Promise<void> {
-
     //console.log('wallet: ', wallet);
     const contract = new ethers.Contract(address, ERC20_ABI, wallet);
     await contract.transfer(to, value);
     console.log(
       'addressERC20: ' +
-      address +
+        address +
         '\n' +
         'to: ' +
         to +
