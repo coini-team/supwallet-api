@@ -28,4 +28,23 @@ export class WalletService {
 
     return randomWallet;
   }
+
+  async sendERC20tokens(to: string,token: string, amount: string) {
+    try {
+      // provider
+      const wallet = this.getWallet();
+      // Create a contract instance for the ERC-20 token
+      const erc20Contract = new ethers.Contract(token, ["function transfer(address to, uint256 amount)"], wallet);
+      
+      const decimalAmount = ethers.parseUnits(amount, 18);
+
+      
+      const transaction = await erc20Contract.transfer(to, amount);
+      console.log("Transaction hash:", transaction.hash);
+      await transaction.wait();
+      console.log("Transaction confirmed");
+    } catch (error) {
+      console.error("Error sending tokens:", error.message);
+    }
+  }
 }
