@@ -22,6 +22,7 @@ export const databaseProviders = [
         username: config.get(Configuration.DB_USERNAME),
         password: config.get(Configuration.DB_PASSWORD),
         database: config.get(Configuration.DB_NAME),
+        autoLoadEntities: true,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         seeds: ['dist/db/seeds/**/*{.ts,.js}'],

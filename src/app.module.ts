@@ -11,16 +11,23 @@ import { Configuration } from './config/config.keys';
 import { NftModule } from './modules/nft/nft.module';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { MessageModule } from './modules/message/message.module';
+import { ProjectModule } from './modules/project/project.module';
 
 @Module({
   imports: [
     DatabaseModule,
     ConfigModule,
+    DatabaseModule,
     TokenModule,
     NftModule,
     NotificationsModule,
     WalletModule,
     UserModule,
+    AuthModule,
+    ProjectModule,
+    MessageModule,
   ],
   controllers: [],
   providers: [],
