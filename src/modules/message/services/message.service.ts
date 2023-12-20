@@ -28,7 +28,7 @@ export class MessageService {
     );
     // Send Message.
     const response = await createPromise(recipient, {
-      originator: '38383',
+      originator: this.configService.get(Message.MESSAGEBIRD_ORIGINATOR),
       timeout: parseInt(this.configService.get(Message.MESSAGEBIRD_TIMEOUT)),
     });
 
@@ -49,7 +49,7 @@ export class MessageService {
     );
     // Verify Code and Return Response.
     return await verifyPromise(token, {
-      originator: '38383',
+      originator: this.configService.get(Message.MESSAGEBIRD_ORIGINATOR),
       timeout: parseInt(this.configService.get(Message.MESSAGEBIRD_TIMEOUT)),
     });
   }
