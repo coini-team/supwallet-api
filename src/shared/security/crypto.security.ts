@@ -5,6 +5,7 @@ function getRandomIV() {
 }
 
 export const encrypt = (key, plaintext) => {
+    key = Buffer.from(key, 'base64');
     const iv = getRandomIV();
     const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
     const encryptedData = Buffer.concat([
@@ -17,6 +18,7 @@ export const encrypt = (key, plaintext) => {
 }
 
 export const decrypt = (key, ciphertext) => {
+    key = Buffer.from(key, 'base64');
     ciphertext = Buffer.from(ciphertext, 'base64');
     const iv = ciphertext.slice(0, 12);
     const ciphertextTag = ciphertext.slice(12);
