@@ -45,3 +45,12 @@ export enum Blockchain {
   MUMBAI_TESTNET_URL = 'MUMBAI_TESTNET_URL',
   WALLET_PRIVATE_KEY = 'WALLET_PRIVATE_KEY',
 }
+
+/**
+ * @description Enum for security encryption keys
+ * @enum {string}
+ * @readonly
+ */
+export enum Security {
+  SECURE_ENCRYPTION_KEY = 'SECURE_ENCRYPTION_KEY',
+}
