@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, HttpException } from '@nestjs/common';
 import { WalletService } from '../services/wallet.service';
 
 @Controller('wallet')
@@ -24,11 +24,11 @@ export class WalletController {
   }
 
   @Post('send')
-  async sendTokens(@Body('to') to: string, @Body('amount') amount: string, @Body('token') token: string) {
-    try {
-      await this.walletService.sendERC20tokens(to, token, amount);
-    } catch (error) {
-      console.error("Error sending tokens:", error.message);
-    }
+  async sendTokens(
+    @Body('to') to: string, 
+    @Body('amount') amount: string, 
+    @Body('token') token: string
+  ) {
+      return await this.walletService.sendERC20tokens(to, token, amount);
   }
 }

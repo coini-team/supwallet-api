@@ -1,5 +1,5 @@
 // Third Party Dependencies.
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ethers, HDNodeWallet, JsonRpcProvider, Wallet } from 'ethers';
 
 // Local Dependencies.
@@ -30,21 +30,34 @@ export class WalletService {
   }
 
   async sendERC20tokens(to: string,token: string, amount: string) {
-    try {
+    try{
+      if (!to || !token || ! amount){
+        throw new NotFoundException('Falta uno o más parámetros requeridos.');
+      }
+
       // provider
       const wallet = this.getWallet();
       // Create a contract instance for the ERC-20 token
-      const erc20Contract = new ethers.Contract(token, ["function transfer(address to, uint256 amount)"], wallet);
-      
-      const decimalAmount = ethers.parseUnits(amount, 18);
 
-      
-      const transaction = await erc20Contract.transfer(to, amount);
+      const erc20Contract = new ethers.Contract(
+        token, 
+        ["function transfer(address to, uint256 amount)"], 
+        wallet
+      );
+    
+      const decimalAmount = ethers.parseUnits(amount, 6);
+
+      const transaction = await erc20Contract.transfer(to, decimalAmount);
       console.log("Transaction hash:", transaction.hash);
       await transaction.wait();
       console.log("Transaction confirmed");
+      console.log(decimalAmount)
+
+      return 'monto: '+decimalAmount+'. Transaccíon realizada con exito'
     } catch (error) {
-      console.error("Error sending tokens:", error.message);
+      // Personaliza el manejo de errores según tus necesidades
+      console.error('Error sending tokens:', error.message);
+      throw new NotFoundException('Error al enviar tokens: ' + error.message);
     }
   }
 }
