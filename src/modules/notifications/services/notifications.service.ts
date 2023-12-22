@@ -48,7 +48,8 @@ export class NotificationsService {
    */
   smartContractEvent(): void {
     // Contract Creation Event.
-    const wsAlchemyURL = this.configService.get(Blockchain.MUMBAI_TESTNET_URL);
+    const wsAlchemyURL = this.configService.get(Blockchain.MUMBAI_TESTNET_WS);
+    console.log('wsAlchemyURL: ', wsAlchemyURL);
     const contractAddress = this.configService.get(
       Blockchain.ERC20_FACTORY_ADDRESS,
     );
