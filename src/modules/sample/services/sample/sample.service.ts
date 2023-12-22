@@ -6,15 +6,15 @@ import { Security } from '../../../../config/config.keys';
 
 @Injectable()
 export class SampleService {
-    constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {}
 
-    encrypt(value) {
-        const key = this.configService.get(Security.SECURE_ENCRYPTION_KEY);
-        return encrypt(key, value);
-    }
+  encrypt(value) {
+    const key = this.configService.get(Security.SECURE_ENCRYPTION_KEY);
+    return encrypt(key, value);
+  }
 
-    decrypt(value) {
-        const key = this.configService.get(Security.SECURE_ENCRYPTION_KEY);
-        return decrypt(key, value);
-    } 
+  decrypt(value) {
+    const key = this.configService.get(Security.SECURE_ENCRYPTION_KEY);
+    return decrypt(key, value);
+  }
 }
