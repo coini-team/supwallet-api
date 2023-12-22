@@ -10,12 +10,12 @@ import { Blockchain } from '../../../config/config.keys';
 
 @Injectable()
 export class TokenService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) { }
 
   async deployERC20Token(
     wallet: Wallet,
     tokenParams: { name: string; symbol: string; initialSupply: number },
-  ): Promise<string> {
+  ): Promise<any> {
     const { name, symbol, initialSupply } = tokenParams;
     const methodName = 'CreateNewERC20Token(string,string,uint256)';
 
@@ -57,13 +57,13 @@ export class TokenService {
 
     console.log(
       'addressERC20: ' +
-        address +
-        '\n' +
-        'account: ' +
-        account +
-        '\n' +
-        'balance: ' +
-        balance,
+      address +
+      '\n' +
+      'account: ' +
+      account +
+      '\n' +
+      'balance: ' +
+      balance,
     );
 
     return balance;
@@ -80,13 +80,13 @@ export class TokenService {
     await contract.transfer(to, value);
     console.log(
       'addressERC20: ' +
-        address +
-        '\n' +
-        'to: ' +
-        to +
-        '\n' +
-        'value: ' +
-        value,
+      address +
+      '\n' +
+      'to: ' +
+      to +
+      '\n' +
+      'value: ' +
+      value,
     );
 
     return;

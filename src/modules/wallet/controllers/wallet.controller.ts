@@ -6,17 +6,18 @@ export class WalletController {
   constructor(private readonly walletService: WalletService) { }
 
   @Post()
-  createWallet(@Body('token') token: string) {
-    if (token) {
-      console.log('Auth Token validation here');
+  createWallet() {
+    try {
+      const wallet = this.walletService.createRandomWallet();
+      const res = {
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+        seedphrase: wallet.mnemonic.phrase,
+      };
+      return res;
+    } catch (error) {
+      throw error;
     }
-    const wallet = this.walletService.createRandomWallet();
-    const res = {
-      address: wallet.address,
-      privateKey: wallet.privateKey,
-      seedphrase: wallet.mnemonic.phrase,
-    };
-    return res;
   }
 
   public getWallet(): any {
