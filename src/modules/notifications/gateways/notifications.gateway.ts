@@ -24,6 +24,6 @@ export class NotificationsGateway implements OnModuleInit {
   onModuleInit(): void {
     // Listen for Contract Events.
     this.logger.log(':::Listening for contract events:::');
-    this.notificationsService.smartContractEvent();
+    // this.notificationsService.smartContractEvent();
   }
 }
