@@ -14,7 +14,7 @@ export class WalletService {
     const provider: JsonRpcProvider = new ethers.JsonRpcProvider(
       this.configService.get(Blockchain.MUMBAI_TESTNET_URL),
     );
-  //public getWallet(provider: JsonRpcProvider): Wallet {
+//public getWallet(provider: JsonRpcProvider): Wallet {
     const wallet: Wallet = new Wallet(
       this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
       provider,
@@ -33,7 +33,7 @@ export class WalletService {
   async sendERC20tokens(chain: string, to: string,token: string, amount: string) {
   //async sendERC20tokens(to: string,token: string, amount: string) {
     try{
-      if (!chain){
+if (!chain){
         throw new NotFoundException('Falta el parametro chain, que es un string.');
       }
 
@@ -81,6 +81,7 @@ export class WalletService {
         );
 
       // Create a contract instance for the ERC-20 token
+
       const erc20Contract = new ethers.Contract(
         token, 
         ["function transfer(address to, uint256 amount)"], 
