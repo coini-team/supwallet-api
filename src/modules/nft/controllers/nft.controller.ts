@@ -18,7 +18,7 @@ export class NftController {
   constructor(
     private readonly nftService: NftService,
     private readonly walletService: WalletService,
-  ) {}
+  ) { }
 
   /**
    * @memberof NftController
@@ -36,17 +36,20 @@ export class NftController {
       symbol: string;
       supply: number;
     },
-  ): Promise<string> {
-    // Get Wallet to Sign.
-    const wallet = this.walletService.getWallet();
+  ): Promise<any> {
+    try {
+      // Get Wallet to Sign.
+      const wallet = this.walletService.getWallet();
 
-    //call method to deploy the ERC20 token
-    const contractAddress = await this.nftService.deployERC721Token(
-      wallet,
-      tokenParams,
-    );
-
-    return contractAddress;
+      //call method to deploy the ERC721 token
+      const result = await this.nftService.deployERC721Token(
+        wallet,
+        tokenParams,
+      );
+      return { success: true, data: result };
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('owner/:tokenId')

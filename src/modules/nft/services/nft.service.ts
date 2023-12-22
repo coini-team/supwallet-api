@@ -23,7 +23,7 @@ export class NftService {
   async deployERC721Token(
     wallet: Wallet,
     tokenParams: { name: string; symbol: string },
-  ): Promise<string> {
+  ): Promise<any> {
     const { name, symbol } = tokenParams;
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
     const contract = new ethers.Contract(

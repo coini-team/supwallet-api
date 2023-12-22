@@ -18,7 +18,7 @@ export class TokenController {
   constructor(
     private readonly tokenService: TokenService,
     private readonly walletService: WalletService,
-  ) {}
+  ) { }
 
   /**
    * @memberof TokenController
@@ -36,16 +36,20 @@ export class TokenController {
       symbol: string;
       initialSupply: number;
     },
-  ): Promise<string> {
-    // Get Wallet to Sign.
-    const wallet = this.walletService.getWallet();
-    //call method to deploy the ERC20 token
-    const contractAddress = await this.tokenService.deployERC20Token(
-      wallet,
-      tokenParams,
-    );
-
-    return contractAddress;
+  ): Promise<any> {
+    try {
+      // Get Wallet to Sign.
+      const wallet = this.walletService.getWallet();
+      //call method to deploy the ERC20 token
+      const result = await this.tokenService.deployERC20Token(
+        wallet,
+        tokenParams,
+      );
+      // const { hash, chainId } = result;
+      return { success: true, data: result };
+    } catch (error) {
+      throw error;
+    }
   }
 
   // TODO: fix BigNumberish
