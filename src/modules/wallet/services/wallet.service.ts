@@ -14,6 +14,7 @@ export class WalletService {
     const provider: JsonRpcProvider = new ethers.JsonRpcProvider(
       this.configService.get(Blockchain.MUMBAI_TESTNET_URL),
     );
+  //public getWallet(provider: JsonRpcProvider): Wallet {
     const wallet: Wallet = new Wallet(
       this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
       provider,
@@ -29,8 +30,13 @@ export class WalletService {
     return randomWallet;
   }
 
-  async sendERC20tokens(to: string,token: string, amount: string) {
+  async sendERC20tokens(chain: string, to: string,token: string, amount: string) {
+  //async sendERC20tokens(to: string,token: string, amount: string) {
     try{
+      if (!chain){
+        throw new NotFoundException('Falta el parametro chain, que es un string.');
+      }
+
       if (!to){
         throw new NotFoundException('Falta el parametro to, que es un string.');
       }
@@ -47,10 +53,34 @@ export class WalletService {
         throw new NotFoundException('El valor de de envio no es válido.');
       }
 
-      // provider
-      const wallet = this.getWallet();
-      // Create a contract instance for the ERC-20 token
+      // Add network-specific configurations based on the 'chain' parameter
+      let network;
+      switch (chain) {
+        case 'polygon':
+          network = 'https://polygon-rpc.com/';
+          break;
+        case 'mainnet':
+          network = 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY';
+          break;
+        case 'polygon-test':
+          network = 'https://rpc.ankr.com/polygon_mumbai';
+          break;
+         // Add cases for other networks as needed
 
+        default:
+          throw new NotFoundException('Invalid chain parameter.');
+      }
+
+      // use default wallet wit provider already set 
+      //const wallet = this.getWallet();
+
+      const provider = new ethers.JsonRpcProvider(network);
+      const wallet = new ethers.Wallet(
+        this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
+        provider
+        );
+
+      // Create a contract instance for the ERC-20 token
       const erc20Contract = new ethers.Contract(
         token, 
         ["function transfer(address to, uint256 amount)"], 
@@ -63,7 +93,7 @@ export class WalletService {
       console.log("Transaction hash:", transaction.hash);
       await transaction.wait();
       console.log("Transaction confirmed");
-      console.log(decimalAmount)
+      console.log(chain);
 
       return 'monto: '+decimalAmount+'. Transaccíon realizada con exito'
     } catch (error) {
