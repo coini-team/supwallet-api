@@ -6,6 +6,6 @@ import { ConfigModule } from '../../config/config.module';
 @Module({
   imports: [ConfigModule],
   controllers: [SampleController],
-  providers: [SampleService]
+  providers: [SampleService],
 })
 export class SampleModule {}
