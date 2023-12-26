@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { walletStatus } from 'src/shared/enums/wallet-status.enum';
 
 @Entity()
-export class CoiniWallet {
+export class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
 
