@@ -23,14 +23,4 @@ export class WalletController {
   public getWallet(): any {
     return this.walletService.getWallet();
   }
-
-  @Post('send')
-  async sendTokens(
-    @Body('to') to: string, 
-    @Body('amount') amount: string, 
-    @Body('token') token: string,
-    @Query('chain') chain: string,
-  ) {
-      return await this.walletService.sendERC20tokens(chain, to, token, amount);
-  }
 }

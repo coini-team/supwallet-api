@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessageModule } from './modules/message/message.module';
 import { ProjectModule } from './modules/project/project.module';
 import { SampleModule } from './modules/sample/sample.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { ChainModule } from './modules/chain/chain.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { ChainModule } from './modules/chain/chain.module';
     ProjectModule,
     MessageModule,
     SampleModule,
+    PaymentModule,
     ChainModule,
   ],
   controllers: [],
