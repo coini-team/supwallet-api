@@ -15,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { MessageModule } from './modules/message/message.module';
 import { ProjectModule } from './modules/project/project.module';
 import { SampleModule } from './modules/sample/sample.module';
+import { ChainModule } from './modules/chain/chain.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SampleModule } from './modules/sample/sample.module';
     ProjectModule,
     MessageModule,
     SampleModule,
+    ChainModule,
   ],
   controllers: [],
   providers: [],
