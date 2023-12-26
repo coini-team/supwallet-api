@@ -4,7 +4,7 @@ export class chainTableCreate1703617842186 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `CREATE TABLE \`chain\` (
-        \`id\` INT UNSIGNED PRIMARY KEY,
+        \`id\` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         \`name\` VARCHAR(25) NOT NULL,
         \`icon\` VARCHAR(50) NOT NULL
       )`
