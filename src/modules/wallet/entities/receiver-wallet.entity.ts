@@ -3,7 +3,7 @@ import { walletStatus } from 'src/shared/enums/wallet-status.enum';
 import { walletType } from 'src/shared/enums/wallet-type.enum';
 
 @Entity()
-export class ReceivingWallet {
+export class ReceiverWallet {
     @PrimaryGeneratedColumn()
     id: number;
 

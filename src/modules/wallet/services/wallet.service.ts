@@ -32,6 +32,3 @@ export class WalletService {
     return randomWallet;
   }
 }
-
-//error 1 Property 'walletRepository' does not exist on type 'WalletService'.
-//error 2 Property 'receivingWalletRepository' does not exist on type 'WalletService'

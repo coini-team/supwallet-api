@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Wallet } from 'src/modules/wallet/entities/wallet.entity';
-import { ReceivingWallet } from 'src/modules/wallet/entities/receiving-wallet.entity';
+import { ReceiverWallet } from 'src/modules/wallet/entities/receiver-wallet.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
@@ -10,8 +10,8 @@ export class PaymentService {
     constructor(
         @InjectRepository(Wallet)
         private readonly walletRepository: Repository<Wallet>,
-        @InjectRepository(ReceivingWallet)
-        private readonly receivingWalletRepository: Repository<ReceivingWallet>,
+        @InjectRepository(ReceiverWallet)
+        private readonly receivingWalletRepository: Repository<ReceiverWallet>,
     ) { }
 
     // Función asincrónica para enviar tokens ERC-20
@@ -25,7 +25,7 @@ export class PaymentService {
 
             //Verifica si el parámetro 'receiver' está presente
             if (!sender) {
-                throw new NotFoundException('Falta el parametro to, que es un string.');
+                throw new NotFoundException('Falta el parametro sender, que es un string.');
             }
 
             // Verifica si el parámetro 'token' está presente
@@ -44,7 +44,7 @@ export class PaymentService {
 
             // Verifica si el monto es inválido
             if (isNaN(numericAmount) || numericAmount < 0.0000001 || amount.length > 8) {
-                throw new NotFoundException('El valor de de envio no es válido.');
+                throw new NotFoundException("El valor de de envio no es válido.");
             }
 
             // Configuraciones específicas de la red según el parámetro 'chain'
@@ -68,14 +68,8 @@ export class PaymentService {
             // Fetch private key for the specified sender
             const senderWallet = await this.walletRepository.findOne({ address: sender });
             if (!senderWallet) {
-                throw new NotFoundException('Sender wallet not found.');
+                throw new NotFoundException('Sender no encontrado en la base de datos');
             }
-            // Configura el proveedor y la billetera utilizando ethers.js
-            //const provider = new ethers.JsonRpcProvider(network);
-            //const wallet = new ethers.Wallet(
-            //this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
-            //provider
-            //);
 
             const senderPrivateKey = senderWallet.privateKey;
 
@@ -91,11 +85,18 @@ export class PaymentService {
             );
 
             // Convierte el monto a unidades decimales
+            console.log("antes de pasar el parametro por la funcion")
+            console.log(amount)
             const decimalAmount = ethers.parseUnits(amount, 6);
+
+
+            // Imprimir valores actuales en la base de datos
+            const allReceiverWallets = await this.receivingWalletRepository.find();
+            console.log("Valores actuales en la base de datos:", allReceiverWallets);
 
             const receiverWallet = await this.receivingWalletRepository.findOne();
             if (!receiverWallet) {
-                throw new NotFoundException('Receiver wallet not found.');
+                throw new NotFoundException('Receiver wallet no encontrada en la base de datos.');
             }
 
             const receiverAddress = receiverWallet.address;
@@ -105,14 +106,20 @@ export class PaymentService {
             console.log("Transaction hash:", transaction.hash);
             await transaction.wait();
             console.log("Transaction confirmed");
-            console.log(chain);
+            console.log("chain: "+chain);
+            console.log("sender: "+sender);
+            console.log("llave privada: " + senderWallet.privateKey);
+            console.log("token: " + token);
 
             // Retorna un mensaje indicando el monto y el éxito de la transacción
             return 'monto: ' + decimalAmount + '. Transaccíon realizada con exito'
         } catch (error) {
             // Personaliza el manejo de errores según la necesidad
             console.error('Error sending tokens:', error.message);
-            console.error(Number(amount))
+            console.error("Amount: " + Number(amount))
+            console.error("Chain: " + chain);
+            console.error("Sender: " + sender);
+            console.error("token: " + token);
             throw new NotFoundException('Error al enviar tokens: ' + error.message);
         }
     }

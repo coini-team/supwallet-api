@@ -7,11 +7,11 @@ export class PaymentController {
 
     @Post('send')
     async sendTokens(
-        @Body('to') to: string,
+        @Body('sender') sender: string,
         @Body('amount') amount: string,
         @Body('token') token: string,
         @Query('chain') chain: string,
     ) {
-        return await this.paymentService.sendERC20tokens(chain, to, token, amount);
+        return await this.paymentService.sendERC20tokens(chain, token, amount, sender);
     }
 }
