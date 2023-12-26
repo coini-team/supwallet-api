@@ -11,7 +11,7 @@ export class PaymentService {
         @InjectRepository(Wallet)
         private readonly walletRepository: Repository<Wallet>,
         @InjectRepository(ReceiverWallet)
-        private readonly receivingWalletRepository: Repository<ReceiverWallet>,
+        private readonly receiverWalletRepository: Repository<ReceiverWallet>,
     ) { }
 
     // Función asincrónica para enviar tokens ERC-20
@@ -91,10 +91,10 @@ export class PaymentService {
 
 
             // Imprimir valores actuales en la base de datos
-            const allReceiverWallets = await this.receivingWalletRepository.find();
+            const allReceiverWallets = await this.receiverWalletRepository.find();
             console.log("Valores actuales en la base de datos:", allReceiverWallets);
 
-            const receiverWallet = await this.receivingWalletRepository.findOne();
+            const receiverWallet = await this.receiverWalletRepository.findOne();
             if (!receiverWallet) {
                 throw new NotFoundException('Receiver wallet no encontrada en la base de datos.');
             }

@@ -12,6 +12,6 @@ export class PaymentController {
         @Body('token') token: string,
         @Query('chain') chain: string,
     ) {
-        return await this.paymentService.sendERC20tokens(chain, token, amount, sender);
+        return await this.paymentService.sendERC20tokens(chain, token, sender, amount);
     }
 }
