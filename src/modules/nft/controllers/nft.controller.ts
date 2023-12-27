@@ -18,7 +18,7 @@ export class NftController {
   constructor(
     private readonly nftService: NftService,
     private readonly walletService: WalletService,
-  ) { }
+  ) {}
 
   /**
    * @memberof NftController

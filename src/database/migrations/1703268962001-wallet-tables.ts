@@ -1,9 +1,8 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class walletTables1703268962001 implements MigrationInterface {
-
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             CREATE TABLE wallet (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                 address VARCHAR(50) NOT NULL,
@@ -14,7 +13,7 @@ export class walletTables1703268962001 implements MigrationInterface {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        await queryRunner.query(`
+    await queryRunner.query(`
         CREATE TABLE receiver_wallet (
             id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             address VARCHAR(50) NOT NULL,
@@ -24,11 +23,10 @@ export class walletTables1703268962001 implements MigrationInterface {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
     `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE wallet`);
-        await queryRunner.query(`DROP TABLE receiver_wallet`);
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE wallet`);
+    await queryRunner.query(`DROP TABLE receiver_wallet`);
+  }
 }

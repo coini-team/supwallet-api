@@ -8,9 +8,10 @@ import { ConfigModule } from '../../config/config.module';
 import { WalletModule } from '../wallet/wallet.module';
 import { TokenModule } from '../token/token.module';
 import { NftModule } from '../nft/nft.module';
+import { ChainModule } from '../chain/chain.module';
 
 @Module({
-  imports: [ConfigModule, TokenModule, NftModule, WalletModule],
+  imports: [ConfigModule, TokenModule, NftModule, WalletModule, ChainModule],
   controllers: [],
   providers: [NotificationsService, NotificationsGateway],
   exports: [],

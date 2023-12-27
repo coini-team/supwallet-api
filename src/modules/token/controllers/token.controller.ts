@@ -18,7 +18,7 @@ export class TokenController {
   constructor(
     private readonly tokenService: TokenService,
     private readonly walletService: WalletService,
-  ) { }
+  ) {}
 
   /**
    * @memberof TokenController
