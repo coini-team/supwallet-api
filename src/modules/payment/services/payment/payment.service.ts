@@ -4,6 +4,7 @@ import { ReceiverWallet } from 'src/modules/wallet/entities/receiver-wallet.enti
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
+import { Network } from 'src/modules/chain/entities/network.entity';
 
 @Injectable()
 export class PaymentService {
@@ -12,6 +13,8 @@ export class PaymentService {
         private readonly walletRepository: Repository<Wallet>,
         @InjectRepository(ReceiverWallet)
         private readonly receiverWalletRepository: Repository<ReceiverWallet>,
+        @InjectRepository(Network)
+        private readonly NetworkRepository: Repository<Network>,
     ) { }
 
     // Función asincrónica para enviar tokens ERC-20
@@ -47,23 +50,34 @@ export class PaymentService {
                 throw new NotFoundException("El valor de de envio no es válido.");
             }
 
+            // Imprimir valores actuales en la base de datos de network
+            const allNetworks = await this.NetworkRepository.find();
+            console.log("Valores actuales en la base de datos de Netwrok:", allNetworks);
+
             // Configuraciones específicas de la red según el parámetro 'chain'
-            let network;
-            switch (chain) {
-                case 'polygon':
-                    network = 'https://polygon-rpc.com/';
-                    break;
-                case 'mainnet':
-                    network = 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY';
-                    break;
-                case 'polygon-test':
-                    network = 'https://rpc.ankr.com/polygon_mumbai';
-                    break;
+            //let network;
+            //switch (chain) {
+                //case 'polygon':
+                    //network = 'https://polygon-rpc.com/';
+                    //break;
+                //case 'mainnet':
+                    //network = 'https://mainnet.infura.io/v3/YOUR_INFURA_KEY';
+                    //break;
+                //case 'polygon-test':
+                    //network = 'https://rpc.ankr.com/polygon_mumbai';
+                    //break;
                 // agregar otras redes para otros casos de uso 
 
-                default:
-                    throw new NotFoundException('Invalid chain parameter.');
+                //default:
+                    //throw new NotFoundException('Invalid chain parameter.');
+            //}
+            // Fetch network url
+            const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
+            if (!urlNetwork) {
+                throw new NotFoundException('Sender no encontrado en la base de datos');
             }
+
+            const network = urlNetwork.rpc_chain_id;
 
             // Fetch private key for the specified sender
             const senderWallet = await this.walletRepository.findOne({ address: sender });
@@ -88,11 +102,6 @@ export class PaymentService {
             console.log("antes de pasar el parametro por la funcion")
             console.log(amount)
             const decimalAmount = ethers.parseUnits(amount, 6);
-
-
-            // Imprimir valores actuales en la base de datos
-            const allReceiverWallets = await this.receiverWalletRepository.find();
-            console.log("Valores actuales en la base de datos:", allReceiverWallets);
 
             const receiverWallet = await this.receiverWalletRepository.findOne();
             if (!receiverWallet) {
