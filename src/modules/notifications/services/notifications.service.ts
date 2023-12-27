@@ -13,7 +13,6 @@ import { ChainService } from '../../chain/services/chain.service';
 import erc20TokenABI from 'src/contracts/abis/ERC20_ABI.json';
 import { CryptoNetwork } from '../../chain/entities/crypto-network.entity';
 
-
 @Injectable()
 export class NotificationsService {
   constructor(
@@ -56,31 +55,37 @@ export class NotificationsService {
       networks.map(async (network) => {
         return {
           id: network.id,
-          name: network.name,
-          provider: new ethers.WebSocketProvider(network.rpc_ws, network.name),
+          name: network.rpc_chain_name,
+          provider: new ethers.WebSocketProvider(
+            network.rpc_ws,
+            network.rpc_chain_name,
+          ),
         };
       }),
     );
+
     // Get All Crypto Networks from Database.
     const cryptoNetworks: CryptoNetwork[] =
       await this.chainService.getCryptoNetworks();
     // Get All Wallets from Database.
     const wallets = await this.walletService.getAllWallets();
-    // Escuchar transacciones relacionadas con cada billetera en cada red.
-    providers.forEach(({ provider }) => {
+    // Map Crypto Networks and Create Contracts.
+    cryptoNetworks.forEach((cryptoNetwork) => {
+      // For each wallet, listen for Transfer events.
       wallets.forEach((wallet) => {
-        cryptoNetworks.forEach((cryptoNetwork) => {
-          const contract = new ethers.Contract(
-            cryptoNetwork.contract,
-            erc20TokenABI,
-            provider,
-          );
-          // Filter to only get Transfer events from the wallet.
-          const filter = contract.filters.Transfer(null, wallet.address);
-          // Listen for events on the contract.
-          contract.on(filter, async (event) => {
-            console.log('event: ', event);
-          });
+        // Create Contract.
+        const contract = new ethers.Contract(
+          cryptoNetwork.contract,
+          erc20TokenABI,
+          providers.find(
+            (provider) => provider.id === cryptoNetwork.network.id,
+          ),
+        );
+        // Filter to only get Transfer events from the wallet.
+        const filter = contract.filters.Transfer(null, wallet.address);
+        // Listen for events on the contract.
+        contract.on(filter, async (event) => {
+          console.log('event: ', event);
         });
       });
     });

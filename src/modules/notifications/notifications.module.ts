@@ -19,6 +19,6 @@ import { ChainModule } from '../chain/chain.module';
 export class NotificationsModule implements OnModuleInit {
   constructor(private readonly notificationsService: NotificationsService) {}
   onModuleInit() {
-    this.notificationsService.listenForEvent();
+    this.notificationsService.processTransferEvents();
   }
 }

@@ -28,7 +28,8 @@ export class ChainService {
    * @returns {Promise<CryptoNetwork[]>}
    */
   public async getCryptoNetworks(): Promise<CryptoNetwork[]> {
-    console.log(':::Getting Crypto Networks:::');
-    return this.cryptoNetworkRepository.find();
+    return await this.cryptoNetworkRepository.find({
+      relations: ['network'],
+    });
   }
 }
