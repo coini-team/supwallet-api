@@ -16,6 +16,6 @@ import { Network } from '../chain/entities/network.entity';
       Network,
     ])],
   controllers: [PaymentController],
-  providers: [PaymentService]
+  providers: [PaymentService],
 })
-export class PaymentModule { }
+export class PaymentModule {}

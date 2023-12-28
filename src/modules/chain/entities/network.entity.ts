@@ -22,6 +22,12 @@ export class Network {
   @Column({ length: 10 })
   rpc_chain_id: string;
 
+  @Column({ length: 100 })
+  rpc_url: string;
+
+  @Column({ length: 100 })
+  rpc_ws: string;
+
   @Column({
     type: 'enum',
     enum: StatusEnum,

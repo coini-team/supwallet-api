@@ -1,22 +1,23 @@
 // Third Party Dependencies.
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { ethers } from 'ethers';
 
 // Local Dependencies.
 import { WalletService } from '../../wallet/services/wallet.service';
 import { TokenService } from '../../token/services/token.service';
-import { NftService } from '../../nft/services/nft.service';
-import { ethers } from 'ethers';
-import erc20TokenABI from 'src/contracts/abis/ERC20_ABI.json';
 import { ConfigService } from '../../../config/config.service';
-import { Blockchain } from '../../../config/config.keys';
+import { Network } from '../../chain/entities/network.entity';
+import { ChainService } from '../../chain/services/chain.service';
+import erc20TokenABI from 'src/contracts/abis/ERC20_ABI.json';
+import { CryptoNetwork } from '../../chain/entities/crypto-network.entity';
 
 @Injectable()
 export class NotificationsService {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly nftService: NftService,
-    private readonly tokenService: TokenService,
     private readonly walletService: WalletService,
+    private readonly chainService: ChainService,
   ) {}
 
   /**
@@ -46,31 +47,47 @@ export class NotificationsService {
    * @description Listen for contract events.
    * @returns {Promise<void>}
    */
-  smartContractEvent(): void {
-    // Contract Creation Event.
-    const wsAlchemyURL = this.configService.get(Blockchain.MUMBAI_TESTNET_WS);
-    console.log('wsAlchemyURL: ', wsAlchemyURL);
-    const contractAddress = this.configService.get(
-      Blockchain.ERC20_FACTORY_ADDRESS,
+  async processTransferEvents() {
+    // Get All Networks from Database.
+    const networks: Network[] = await this.chainService.getAllNetworks();
+    // Map Networks and Create Providers.
+    const providers = await Promise.all(
+      networks.map(async (network) => {
+        return {
+          id: network.id,
+          name: network.rpc_chain_name,
+          provider: new ethers.WebSocketProvider(
+            network.rpc_ws,
+            network.rpc_chain_name,
+          ),
+        };
+      }),
     );
-    // Create a Websocket Provider.
-    const webSocketProvider = new ethers.WebSocketProvider(
-      wsAlchemyURL,
-      'maticmum',
-    );
-    // ERC20 Token Address.
-    const erc20TokenAddress = this.configService.get(Blockchain.ERC20_TOKEN_ADDRESS);
-    // Create a Contract Instance.
-    const contract = new ethers.Contract(
-      erc20TokenAddress,
-      erc20TokenABI,
-      webSocketProvider,
-    );
-    // Listen for Transfer Event.
-    const filter = contract.filters.Transfer(null, contractAddress);
-    // Listen for events.
-    contract.on(filter, (event) => {
-      console.log('=> event: ', event);
+
+    // Get All Crypto Networks from Database.
+    const cryptoNetworks: CryptoNetwork[] =
+      await this.chainService.getCryptoNetworks();
+    // Get All Wallets from Database.
+    const wallets = await this.walletService.getAllWallets();
+    // Map Crypto Networks and Create Contracts.
+    cryptoNetworks.forEach((cryptoNetwork) => {
+      // For each wallet, listen for Transfer events.
+      wallets.forEach((wallet) => {
+        // Create Contract.
+        const contract = new ethers.Contract(
+          cryptoNetwork.contract,
+          erc20TokenABI,
+          providers.find(
+            (provider) => provider.id === cryptoNetwork.network.id,
+          ),
+        );
+        // Filter to only get Transfer events from the wallet.
+        const filter = contract.filters.Transfer(null, wallet.address);
+        // Listen for events on the contract.
+        contract.on(filter, async (event) => {
+          console.log('event: ', event);
+        });
+      });
     });
   }
 }
