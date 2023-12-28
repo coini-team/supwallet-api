@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Query} from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { WalletService } from '../services/wallet.service';
 
 @Controller('wallet')
 export class WalletController {
-  constructor(private readonly walletService: WalletService) { }
+  constructor(private readonly walletService: WalletService) {}
 
   @Post()
   createWallet() {

@@ -8,12 +8,8 @@ import { Wallet } from 'src/modules/wallet/entities/wallet.entity';
 import { ReceiverWallet } from 'src/modules/wallet/entities/receiver-wallet.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Wallet,
-      ReceiverWallet,
-    ])],
+  imports: [TypeOrmModule.forFeature([Wallet, ReceiverWallet])],
   controllers: [PaymentController],
-  providers: [PaymentService]
+  providers: [PaymentService],
 })
-export class PaymentModule { }
+export class PaymentModule {}
