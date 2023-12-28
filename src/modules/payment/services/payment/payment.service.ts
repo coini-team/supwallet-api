@@ -132,5 +132,4 @@ export class PaymentService {
             throw new NotFoundException('Error al enviar tokens: ' + error.message);
         }
     }
-  }
 }
