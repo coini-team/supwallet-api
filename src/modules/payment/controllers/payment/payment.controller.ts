@@ -15,8 +15,8 @@ export class PaymentController {
     return await this.paymentService.sendERC20tokens(
       chain,
       token,
-      sender,
       amount,
+      sender,
     );
   }
 }
