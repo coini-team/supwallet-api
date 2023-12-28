@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
 import { Network } from 'src/modules/chain/entities/network.entity';
+import { SendPaymentDto } from '../dto/send-payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -18,9 +19,9 @@ export class PaymentService {
     ) { }
 
     // Función asincrónica para enviar tokens ERC-20
-    async sendERC20tokens(chain: string, token: string, amount: string, sender: string) {
+    async sendERC20tokens(chain: string, sendPayment: SendPaymentDto) {
         try {
-
+            const { sender, token, amount } = sendPayment;
             // Verifica si el parámetro 'chain' está presente
             if (!chain) {
                 throw new NotFoundException('Falta el parametro chain, que es un string.');
