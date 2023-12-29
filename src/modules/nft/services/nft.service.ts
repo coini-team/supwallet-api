@@ -1,18 +1,23 @@
 // Third Party Dependencies.
 import { Contract, ethers, Wallet } from 'ethers';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 // Local Dependencies.
 import FactoryERC721_ABI from '../../../contracts/abis/FactoryERC721_ABI.json';
 import { WalletService } from '../../wallet/services/wallet.service';
+import { Network } from 'src/modules/chain/entities/network.entity';
 import { ConfigService } from '../../../config/config.service';
 import { Blockchain } from '../../../config/config.keys';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NftService {
   constructor(
     private readonly configService: ConfigService,
     private readonly walletService: WalletService,
+    @InjectRepository(Network)
+    private readonly NetworkRepository: Repository<Network>,
   ) {}
 
   /**
@@ -22,14 +27,24 @@ export class NftService {
    */
   async deployERC721Token(
     wallet: Wallet,
-    tokenParams: { name: string; symbol: string },
+    tokenParams: { name: string; symbol: string }, chain:string
   ): Promise<any> {
     const { name, symbol } = tokenParams;
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
+
+    // traer network url
+    const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
+    if (!urlNetwork) {
+        throw new NotFoundException('Chain no encontrado en la base de datos');
+    }
+
+    const network = urlNetwork.rpc_url;
+    const provider = new ethers.JsonRpcProvider(network);
+
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC721_FACTORY_ADDRESS),
       FactoryERC721_ABI,
-      wallet,
+      wallet.connect(provider),
     );
     try {
       const result = await contract[methodName](name, symbol);

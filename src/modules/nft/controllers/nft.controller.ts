@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 
 // Local Dependencies.
@@ -36,6 +37,7 @@ export class NftController {
       symbol: string;
       supply: number;
     },
+    @Query('chain') chain: string,
   ): Promise<any> {
     try {
       // Get Wallet to Sign.
@@ -45,6 +47,7 @@ export class NftController {
       const result = await this.nftService.deployERC721Token(
         wallet,
         tokenParams,
+        chain,
       );
       return { success: true, data: result };
     } catch (error) {

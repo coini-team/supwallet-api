@@ -36,6 +36,7 @@ export class TokenController {
       symbol: string;
       initialSupply: number;
     },
+    @Query('chain') chain: string,
   ): Promise<any> {
     try {
       // Get Wallet to Sign.
@@ -44,6 +45,7 @@ export class TokenController {
       const result = await this.tokenService.deployERC20Token(
         wallet,
         tokenParams,
+        chain,
       );
       // const { hash, chainId } = result;
       return { success: true, data: result };
