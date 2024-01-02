@@ -65,7 +65,6 @@ export class NftService {
         // Puedes lanzar una excepción personalizada si lo prefieres
         throw new NotFoundException(errorMessage);
       }
-      //throw error;
     }
   }
 
