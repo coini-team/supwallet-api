@@ -32,10 +32,14 @@ export class NftService {
     const { name, symbol } = tokenParams;
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
 
+    if (!chain) {
+      throw new NotFoundException("Falta el parametro 'chain' en el QueryParam");
+    }
+
     // traer network url
     const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
     if (!urlNetwork) {
-        throw new NotFoundException('Chain no encontrado en la base de datos');
+        throw new NotFoundException("Chain no encontrado en la base de datos");
     }
 
     const network = urlNetwork.rpc_url;
@@ -54,7 +58,14 @@ export class NftService {
       );
       return result;
     } catch (error) {
-      throw error;
+      if (error.code === 'INSUFFICIENT_FUNDS') {
+        const errorMessage = "Saldo insuficiente para cubrir el costo de la transacción";
+        console.error(error);
+        
+        // Puedes lanzar una excepción personalizada si lo prefieres
+        throw new NotFoundException(errorMessage);
+      }
+      //throw error;
     }
   }
 
@@ -158,7 +169,7 @@ export class NftService {
     const owner = await contractERC721.ownerOf(tokenId);
 
     if (owner !== (await wallet.getAddress())) {
-      throw new Error('No tienes permiso para establecer el URI del token.');
+      throw new Error("No tienes permiso para establecer el URI del token.");
     }
 
     // Llamar a la función del contrato para establecer el URI del token

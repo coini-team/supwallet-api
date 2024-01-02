@@ -24,23 +24,7 @@ export class PaymentService {
             const { sender, token, amount } = sendPayment;
             // Verifica si el parámetro 'chain' está presente
             if (!chain) {
-                throw new NotFoundException('Falta el parametro chain, que es un string.');
-            }
-
-            //Verifica si el parámetro 'receiver' está presente
-            if (!sender) {
-                throw new NotFoundException('Falta el parametro sender, que es un string.');
-            }
-
-            // Verifica si el parámetro 'token' está presente
-            if (!token) {
-                throw new NotFoundException('Falta el parametro token, que es un string.');
-            }
-
-            // Verifica si el parámetro 'amount' está presente
-            if (!amount) {
-                throw new NotFoundException('Falta el parametro amount, que es un string.');
-
+                throw new NotFoundException("Falta el parametro 'chain' en el QueryParam");
             }
 
             // Convierte el monto a un valor numérico
@@ -98,8 +82,8 @@ export class PaymentService {
             return 'monto: ' + decimalAmount + '. Transaccíon realizada con exito'
         } catch (error) {
             // Personaliza el manejo de errores según la necesidad
-            console.error('Error sending tokens:', error);
-            throw new NotFoundException('Error al enviar tokens: ' + error.message);
+            console.error('Error sending tokens:', error,);
+            throw new NotFoundException(`Error al enviar tokens: ${error.message}`);
         }
     }
 }

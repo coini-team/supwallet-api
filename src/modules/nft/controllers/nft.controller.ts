@@ -8,11 +8,14 @@ import {
   Param,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 // Local Dependencies.
 import { NftService } from '../services/nft.service';
 import { WalletService } from '../../wallet/services/wallet.service';
+import { CreateNftDto } from '../dto/create-nft.dto';
 
 @Controller('nft')
 export class NftController {
@@ -28,15 +31,10 @@ export class NftController {
    * @returns {string} - Contract Address.
    */
   @Post()
+  @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
   public async deployERC721Token(
-    @Body()
-    tokenParams: {
-      type: string;
-      name: string;
-      symbol: string;
-      supply: number;
-    },
+    @Body() CreateNft: CreateNftDto,
     @Query('chain') chain: string,
   ): Promise<any> {
     try {
@@ -46,7 +44,7 @@ export class NftController {
       //call method to deploy the ERC721 token
       const result = await this.nftService.deployERC721Token(
         wallet,
-        tokenParams,
+        CreateNft,
         chain,
       );
       return { success: true, data: result };

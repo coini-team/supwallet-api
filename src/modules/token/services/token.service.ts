@@ -27,6 +27,10 @@ export class TokenService {
     const { name, symbol, initialSupply } = tokenParams;
     const methodName = 'CreateNewERC20Token(string,string,uint256)';
 
+    if (!chain) {
+      throw new NotFoundException("Falta el parametro 'chain' en el QueryParam");
+    }
+
     // traer network url
     const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
     if (!urlNetwork) {
@@ -49,7 +53,13 @@ export class TokenService {
       );
       return result;
     } catch (error) {
-      throw error;
+      if (error.code === 'INSUFFICIENT_FUNDS') {
+        const errorMessage = "Saldo insuficiente para cubrir el costo de la transacción";
+        console.error(error);
+        
+        // Puedes lanzar una excepción personalizada si lo prefieres
+        throw new NotFoundException(errorMessage);
+      }
     }
   }
 
