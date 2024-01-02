@@ -15,12 +15,6 @@ export class Project {
   mode: string;
 
   @Column()
-  project_id: number;
-
-  @Column()
-  private_key: string;
-
-  @Column()
   api_key: string;
 
   @Column()

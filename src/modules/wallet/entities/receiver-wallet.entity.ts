@@ -1,6 +1,9 @@
+// Third Party Dependencies.
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { walletStatus } from 'src/shared/enums/wallet-status.enum';
+
+// Local Dependencies.
 import { walletType } from 'src/shared/enums/wallet-type.enum';
+import { StatusEnum } from '../../../shared/enums/status.enum';
 
 @Entity()
 export class ReceiverWallet {
@@ -18,8 +21,8 @@ export class ReceiverWallet {
 
   @Column({
     type: 'enum',
-    enum: walletStatus,
-    default: walletStatus.ACTIVE,
+    enum: StatusEnum,
+    default: StatusEnum.ACTIVE,
   })
   status: string;
 }
