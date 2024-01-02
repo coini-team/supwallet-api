@@ -7,11 +7,14 @@ import {
   HttpStatus,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 // Local Dependencies.
 import { WalletService } from '../../wallet/services/wallet.service';
 import { TokenService } from '../services/token.service';
+import { DeployTokenDto } from '../dto/deploy-token.dto'; 
 
 @Controller('token')
 export class TokenController {
@@ -27,15 +30,10 @@ export class TokenController {
    * @returns {string} - Contract Address.
    */
   @Post()
+  @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
   async deployERC20Token(
-    @Body()
-    tokenParams: {
-      type: string;
-      name: string;
-      symbol: string;
-      initialSupply: number;
-    },
+    @Body()tokenParams: DeployTokenDto,
     @Query('chain') chain: string,
   ): Promise<any> {
     try {

@@ -12,4 +12,5 @@ export class SendPaymentDto {
   @IsString({message:"El parametro 'token' debe ser un string."})
   @IsNotEmpty({message:"Falta el parametro 'token'"})
   token: string;
+
 }

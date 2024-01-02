@@ -19,7 +19,10 @@ export class PaymentService {
     ) { }
 
     // Función asincrónica para enviar tokens ERC-20
-    async sendERC20tokens(chain: string, sendPayment: SendPaymentDto) {
+    async sendERC20tokens(
+        chain: string, 
+        sendPayment: SendPaymentDto,
+        ) {
         try {
             const { sender, token, amount } = sendPayment;
             // Verifica si el parámetro 'chain' está presente
@@ -83,6 +86,12 @@ export class PaymentService {
         } catch (error) {
             // Personaliza el manejo de errores según la necesidad
             console.error('Error sending tokens:', error,);
+            if (error.code === 'INSUFFICIENT_FUNDS') {
+                const errorMessage = "Saldo insuficiente para cubrir el costo de la transacción";
+                        
+                // Puedes lanzar una excepción personalizada si lo prefieres
+                throw new NotFoundException(errorMessage);
+              }
             throw new NotFoundException(`Error al enviar tokens: ${error.message}`);
         }
     }

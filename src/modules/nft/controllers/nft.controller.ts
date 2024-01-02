@@ -15,7 +15,7 @@ import {
 // Local Dependencies.
 import { NftService } from '../services/nft.service';
 import { WalletService } from '../../wallet/services/wallet.service';
-import { CreateNftDto } from '../dto/create-nft.dto';
+import { DeployNftDto } from '../dto/deploy-nft.dto';
 
 @Controller('nft')
 export class NftController {
@@ -34,7 +34,7 @@ export class NftController {
   @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
   public async deployERC721Token(
-    @Body() CreateNft: CreateNftDto,
+    @Body() tokenParams: DeployNftDto,
     @Query('chain') chain: string,
   ): Promise<any> {
     try {
@@ -44,7 +44,7 @@ export class NftController {
       //call method to deploy the ERC721 token
       const result = await this.nftService.deployERC721Token(
         wallet,
-        CreateNft,
+        tokenParams,
         chain,
       );
       return { success: true, data: result };

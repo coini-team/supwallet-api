@@ -10,6 +10,7 @@ import { ConfigService } from '../../../config/config.service';
 import { Blockchain } from '../../../config/config.keys';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { DeployTokenDto } from '../dto/deploy-token.dto';
 
 @Injectable()
 export class TokenService {
@@ -21,7 +22,7 @@ export class TokenService {
 
   async deployERC20Token(
     wallet: Wallet,
-    tokenParams: { name: string; symbol: string; initialSupply: number },
+    tokenParams: DeployTokenDto,
     chain: string,
   ): Promise<any> {
     const { name, symbol, initialSupply } = tokenParams;
@@ -53,9 +54,9 @@ export class TokenService {
       );
       return result;
     } catch (error) {
+      console.error(error);
       if (error.code === 'INSUFFICIENT_FUNDS') {
         const errorMessage = "Saldo insuficiente para cubrir el costo de la transacción";
-        console.error(error);
         
         // Puedes lanzar una excepción personalizada si lo prefieres
         throw new NotFoundException(errorMessage);
