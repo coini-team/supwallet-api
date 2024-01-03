@@ -1,7 +1,19 @@
 // Third Party Dependencies.
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity()
+// Local Dependencies.
+import { Role } from '../../role/entities/role.entity';
+import { StatusEnum } from '../../../shared/enums/status.enum';
+
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
@@ -14,4 +26,25 @@ export class User {
 
   @Column({ name: 'email', nullable: true, length: 45, type: 'varchar' })
   email: string;
+
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'role_id' },
+  })
+  roles: Role[];
+
+  @Column({
+    type: 'enum',
+    enum: StatusEnum,
+    default: StatusEnum.ACTIVE,
+  })
+  status: string;
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

@@ -17,6 +17,7 @@ import { ProjectModule } from './modules/project/project.module';
 import { SampleModule } from './modules/sample/sample.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ChainModule } from './modules/chain/chain.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ChainModule } from './modules/chain/chain.module';
     SampleModule,
     PaymentModule,
     ChainModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [],
