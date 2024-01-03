@@ -20,7 +20,4 @@ export class WalletController {
     }
   }
 
-  public getWallet(): any {
-    return this.walletService.getWallet();
-  }
 }

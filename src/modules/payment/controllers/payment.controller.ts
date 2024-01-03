@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Post, 
+  Query, 
+  UsePipes, 
+  ValidationPipe 
+} from '@nestjs/common';
 import { PaymentService } from '../services/payment.service';
 import { SendPaymentDto } from '../dto/send-payment.dto';
 
@@ -7,6 +14,7 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) { }
 
   @Post('send')
+  @UsePipes(ValidationPipe)
   async sendTokens(
     @Body() sendPayment: SendPaymentDto,
     @Query('chain') chain: string,

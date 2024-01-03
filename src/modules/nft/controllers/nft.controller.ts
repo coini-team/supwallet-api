@@ -7,11 +7,15 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 // Local Dependencies.
 import { NftService } from '../services/nft.service';
 import { WalletService } from '../../wallet/services/wallet.service';
+import { DeployNftDto } from '../dto/deploy-nft.dto';
 
 @Controller('nft')
 export class NftController {
@@ -27,24 +31,21 @@ export class NftController {
    * @returns {string} - Contract Address.
    */
   @Post()
+  @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.CREATED)
   public async deployERC721Token(
-    @Body()
-    tokenParams: {
-      type: string;
-      name: string;
-      symbol: string;
-      supply: number;
-    },
+    @Body() tokenParams: DeployNftDto,
+    @Query('chain') chain: string,
   ): Promise<any> {
     try {
+      const rpcUrl = await this.walletService.getRpcUrl(chain);
       // Get Wallet to Sign.
-      const wallet = this.walletService.getWallet();
-
+      const wallet = this.walletService.getWallet(rpcUrl);
       //call method to deploy the ERC721 token
       const result = await this.nftService.deployERC721Token(
         wallet,
         tokenParams,
+        rpcUrl,
       );
       return { success: true, data: result };
     } catch (error) {
@@ -64,16 +65,18 @@ export class NftController {
     return { tokenURI };
   }
 
-  @Post(':tokenId/set-uri')
-  async setTokenURI(
-    @Param('tokenId') tokenId: number,
-    @Body('tokenURI') tokenURI: string,
-  ): Promise<void> {
-    await this.nftService.setTokenURI(tokenId, tokenURI);
-  }
+  // TODO: receive chain
+  // @Post(':tokenId/set-uri')
+  // async setTokenURI(
+  //   @Param('tokenId') tokenId: number,
+  //   @Body('tokenURI') tokenURI: string,
+  // ): Promise<void> {
+  //   await this.nftService.setTokenURI(tokenId, tokenURI);
+  // }
 
-  @Get(':tokenId/owner')
-  async getOwnerOfToken(@Param('tokenId') tokenId: number): Promise<string> {
-    return this.nftService.getOwnerOfToken(tokenId);
-  }
+  // TODO: receive chain
+  // @Get(':tokenId/owner')
+  // async getOwnerOfToken(@Param('tokenId') tokenId: number): Promise<string> {
+  //   return this.nftService.getOwnerOfToken(tokenId);
+  // }
 }
