@@ -955,6 +955,11 @@
   dependencies:
     "@babel/types" "^7.20.7"
 
+"@types/bcryptjs@^2.4.6":
+  version "2.4.6"
+  resolved "https://registry.yarnpkg.com/@types/bcryptjs/-/bcryptjs-2.4.6.tgz#2b92e3c2121c66eba3901e64faf8bb922ec291fa"
+  integrity sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==
+
 "@types/body-parser@*":
   version "1.19.5"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.5.tgz#04ce9a3b677dc8bd681a17da1ab9835dc9d3ede4"
@@ -1018,7 +1023,7 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
-"@types/express@^4.17.17":
+"@types/express@*", "@types/express@^4.17.17":
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.21.tgz#c26d4a151e60efe0084b23dc3369ebc631ed192d"
   integrity sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==
@@ -1072,7 +1077,7 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
-"@types/jsonwebtoken@9.0.5":
+"@types/jsonwebtoken@*", "@types/jsonwebtoken@9.0.5":
   version "9.0.5"
   resolved "https://registry.yarnpkg.com/@types/jsonwebtoken/-/jsonwebtoken-9.0.5.tgz#0bd9b841c9e6c5a937c17656e2368f65da025588"
   integrity sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==
@@ -1100,6 +1105,29 @@
   version "18.15.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.13.tgz#f64277c341150c979e42b00e4ac289290c9df469"
   integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
+
+"@types/passport-jwt@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/passport-jwt/-/passport-jwt-4.0.0.tgz#96fd75557b83352efe9f5ca55d5e7ab9e7194d4d"
+  integrity sha512-m32144UaQENieShQDWVQ8w+CVAzCV/pDahICUlQvmqLOePGglQaMRQ28I7fKnRMFLNwVP4eWssOtcQ0kLe1vww==
+  dependencies:
+    "@types/jsonwebtoken" "*"
+    "@types/passport-strategy" "*"
+
+"@types/passport-strategy@*":
+  version "0.2.38"
+  resolved "https://registry.yarnpkg.com/@types/passport-strategy/-/passport-strategy-0.2.38.tgz#482abba0b165cd4553ec8b748f30b022bd6c04d3"
+  integrity sha512-GC6eMqqojOooq993Tmnmp7AUTbbQSgilyvpCYQjT+H6JfG/g6RGc7nXEniZlp0zyKJ0WUdOiZWLBZft9Yug1uA==
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+
+"@types/passport@*", "@types/passport@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@types/passport/-/passport-1.0.16.tgz#5a2918b180a16924c4d75c31254c31cdca5ce6cf"
+  integrity sha512-FD0qD5hbPWQzaM0wHUnJ/T0BBCJBxCeemtnCwc/ThhTg3x9jfrAcRUmj5Dopza+MfFS9acTe3wk7rcVnRIp/0A==
+  dependencies:
+    "@types/express" "*"
 
 "@types/qs@*":
   version "6.9.10"
@@ -1642,6 +1670,11 @@ base64id@2.0.0, base64id@~2.0.0:
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-2.0.0.tgz#2770ac6bc47d312af97a8bf9a634342e0cd25cb6"
   integrity sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==
 
+bcryptjs@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
+  integrity sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==
+
 big-integer@^1.6.44:
   version "1.6.52"
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.52.tgz#60a887f3047614a8e1bffe5d7173490a97dc8c85"
@@ -1893,6 +1926,11 @@ cjs-module-lexer@^1.0.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/cjs-module-lexer/-/cjs-module-lexer-1.2.3.tgz#6c370ab19f8a3394e318fe682686ec0ac684d107"
   integrity sha512-0TNiGstbQmCFwt4akjjBg5pLRTSyj/PkWQ1ZoO2zntmg9yLqSRxwEa4iCfQLGjqhiqBfOJa7W/E8wfGrTDmlZQ==
+
+class-transformer@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.5.1.tgz#24147d5dffd2a6cea930a3250a677addf96ab336"
+  integrity sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==
 
 class-validator@^0.13.2:
   version "0.13.2"
@@ -3856,7 +3894,7 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonwebtoken@9.0.2, jsonwebtoken@^9.0.0:
+jsonwebtoken@9.0.2, jsonwebtoken@^9.0.0, jsonwebtoken@^9.0.2:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz#65ff91f4abef1784697d40952bb1998c504caaf3"
   integrity sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==
@@ -5641,7 +5679,7 @@ typeorm-seeding@^1.6.1:
     reflect-metadata "0.1.13"
     yargs "15.3.1"
 
-typeorm@^0.2.45:
+typeorm@^0.2.18:
   version "0.2.45"
   resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.45.tgz#e5bbb3af822dc4646bad96cfa48cd22fa4687cea"
   integrity sha512-c0rCO8VMJ3ER7JQ73xfk0zDnVv0WDjpsP6Q1m6CVKul7DB9iVdWLRjPzc8v2eaeBuomsbZ2+gTaYr8k1gm3bYA==

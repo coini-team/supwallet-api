@@ -1,12 +1,23 @@
 // Third Party Dependencies.
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 // Local Dependencies.
 import { MessageService } from '../../modules/message/services/message.service';
-import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { ConfigService } from 'src/config/config.service';
 import { JwtEnv } from '../../config/config.keys';
+import { AuthRepository } from '../Repositories/auth.repository';
+import { SignInDto, SignUpDto } from '../dto';
+import { compare } from 'bcryptjs';
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { RoleTypeEnum } from '../../shared/enums/role-type.enum';
+import { Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from "../../modules/user/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -19,8 +30,53 @@ export class AuthService {
   constructor(
     private readonly messageBirdService: MessageService,
     private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
+    private readonly _jwtService: JwtService,
+    private readonly _authRepository: AuthRepository,
+    @InjectRepository(User)
+    private readonly _userRepository: Repository<User>,
   ) {}
+
+  async signUp(user: SignUpDto) {
+    const { email }: SignUpDto = user;
+    const userExist: User = await this._userRepository.findOne({
+      where: { email },
+    });
+
+    if (userExist) throw new ConflictException('User already exist');
+
+    return this._authRepository.signUp(user);
+  }
+
+  async signIn(user: SignInDto): Promise<{
+    tokens: { accessToken: string; refreshToken: string };
+    user: JwtPayload;
+  }> {
+    const { email, password } = user;
+
+    const userExist = await this._userRepository.findOne({
+      where: { email },
+    });
+
+    if (!userExist) throw new ConflictException('User does not exist');
+
+    const isMatch = await compare(password, userExist.password);
+
+    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+
+    const payload: JwtPayload = {
+      id: userExist.id,
+      name: userExist.name,
+      email: userExist.email,
+      roles: userExist.roles.map((role) => role.name as RoleTypeEnum),
+    };
+
+    const tokens = this.generateTokens(payload);
+
+    return {
+      user: payload,
+      tokens,
+    };
+  }
 
   /**
    * @memberof AuthService
@@ -69,17 +125,17 @@ export class AuthService {
    * @param {JwtPayload} payload
    * @returns {Promise<{ accessToken: string; refreshToken: string }>}
    */
-  public generateTokens(payload: JwtPayload): {
+  public generateTokens(payload): {
     accessToken: string;
     refreshToken: string;
   } {
     // Generate tokens and return.
     return {
-      accessToken: this.jwtService.sign(payload, {
+      accessToken: this._jwtService.sign(payload, {
         secret: this.configService.get(JwtEnv.JWT_REFRESH_SECRET),
         expiresIn: this.configService.get(JwtEnv.JWT_REFRESH_EXPIRES_IN),
       }),
-      refreshToken: this.jwtService.sign(payload, {
+      refreshToken: this._jwtService.sign(payload, {
         secret: this.configService.get(JwtEnv.JWT_REFRESH_SECRET),
         expiresIn: this.configService.get(JwtEnv.JWT_REFRESH_EXPIRES_IN),
       }),
@@ -96,7 +152,7 @@ export class AuthService {
     refresh: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     // Validate refresh token and get payload.
-    const validate = await this.jwtService.verify(refresh, {
+    const validate = await this._jwtService.verify(refresh, {
       secret: this.configService.get(JwtEnv.JWT_REFRESH_SECRET),
     });
     // If refresh token is invalid, throw an error.

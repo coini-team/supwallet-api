@@ -7,13 +7,18 @@ import {
   Param,
   Delete,
   Logger,
-  Inject, ParseIntPipe
-} from "@nestjs/common";
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { GetUserDto } from '../dto';
 import { User } from '../entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { RoleProtect } from '../../role/decorators/role.decorator';
+import { RoleTypeEnum } from '../../../shared/enums/role-type.enum';
+import { RoleGuard } from '../../role/guards/role.guard';
 
 @Controller('user')
 export class UserController {
@@ -27,6 +32,8 @@ export class UserController {
   }
 
   @Get(':id')
+  @RoleProtect(RoleTypeEnum.ADMIN, RoleTypeEnum.MEMBER)
+  @UseGuards(AuthGuard(), RoleGuard)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<GetUserDto> {
     return await this.userService.get(id);
   }

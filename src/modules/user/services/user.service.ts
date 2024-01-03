@@ -15,6 +15,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { GetUserDto } from '../dto';
+import { Role } from "../../role/entities/role.entity";
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly _roleRepository: Repository<Role>,
   ) {}
 
   async get(id: number): Promise<GetUserDto> {
@@ -80,5 +83,28 @@ export class UserService {
     await this._userRepository.update(id, {
       status: this._statusEnum.INACTIVE,
     });
+  }
+
+  async setRoleToUser(userId: number, roleId: number): Promise<boolean> {
+    // Validate if the id is empty.
+    !userId && new BadRequestException('id must be sent');
+    // Validate if the user exists.
+    const userExists: User = await this._userRepository.findOne(userId, {
+      where: { status: this._statusEnum.ACTIVE },
+    });
+    // Validate if the user exists.
+    !userExists && new NotFoundException();
+    // Validate if the role exists.
+    const roleExists: Role = await this._roleRepository.findOne(roleId, {
+      where: { status: this._statusEnum.ACTIVE },
+    });
+    // Validate if the role exists.
+    !roleExists && new NotFoundException();
+    // Add the role to the user.
+    userExists.roles = [...userExists.roles, roleExists];
+    // Save the user.
+    await this._userRepository.save(userExists);
+    // Return true.
+    return true;
   }
 }
