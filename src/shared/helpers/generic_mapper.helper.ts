@@ -1,15 +1,14 @@
+import { Logger } from '@nestjs/common';
+
 export class GenericMapper {
+  private readonly _logger = new Logger(':::: GenericMapper ::::');
+
   public map<T, U>(entity: T, dtoType: new () => U): U {
-    // Create a new instance of the DTO type.
+    // Create a new instance of the dto.
     const dto = new dtoType();
-    // Copy all properties from the entity to the DTO.
-    for (const key of Object.keys(dto)) {
-      // If the entity has the property, copy it to the DTO.
-      if (entity.hasOwnProperty(key)) {
-        dto[key] = entity[key];
-      }
-    }
-    // Return the DTO.
+    // Assign the entity fields to the dto.
+    Object.assign(dto, entity);
+    // Return the dto.
     return dto;
   }
 }

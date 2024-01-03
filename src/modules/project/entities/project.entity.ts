@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { StatusEnum } from '../../../shared/enums/status.enum';
 
 @Entity()
 export class Project {
@@ -17,12 +24,16 @@ export class Project {
   @Column()
   api_key: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: StatusEnum,
+    default: StatusEnum.ACTIVE,
+  })
   status: string;
 
-  @Column()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
 
-  @Column()
-  updated_at: Date;
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

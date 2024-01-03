@@ -1,5 +1,11 @@
 // Third Party Dependencies.
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // Local Dependencies.
 import { StatusEnum } from '../../../shared/enums/status.enum';
@@ -24,4 +30,10 @@ export class Wallet {
     default: StatusEnum.ACTIVE,
   })
   status: string;
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

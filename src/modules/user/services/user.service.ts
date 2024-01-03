@@ -1,25 +1,32 @@
+// Third Party Dependencies.
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import {
   BadRequestException,
-  Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+
+// Local Dependencies.
+import { StatusEnum } from '../../../shared/enums/status.enum';
+import { GenericMapper } from '../../../shared/helpers';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { UserRepository } from '../repositories/user.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { GetUserDto } from '../dto';
 import { User } from '../entities/user.entity';
-import { GenericMapper } from '../../../shared/helpers';
-import { Repository } from 'typeorm';
+import { GetUserDto } from '../dto';
 
 @Injectable()
 export class UserService {
+  // Logger.
+  private readonly _logger = new Logger(':::: UserService ::::');
+  // Mapper for DTOs.
+  private readonly mapper = new GenericMapper();
+  // Status Enum.
+  private readonly _statusEnum = StatusEnum;
   constructor(
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
-    @Inject(GenericMapper)
-    private mapper: GenericMapper,
   ) {}
 
   async get(id: number): Promise<GetUserDto> {
@@ -27,19 +34,19 @@ export class UserService {
     !id && new BadRequestException('id must be sent');
     // Find the user with the id and status active.
     const user: User = await this._userRepository.findOne(id, {
-      where: { status: 'ACTIVE' },
+      where: { status: this._statusEnum.ACTIVE },
     });
     // Validate if the user exists.
     !user && new NotFoundException();
     // Map the user to the GetUserDto and return it.
     return this.mapper.map<User, GetUserDto>(user, GetUserDto);
   }
-
+  x;
   async create(user: CreateUserDto): Promise<GetUserDto> {
     // Map the user to the User entity.
-    const userCreated: User = await this._userRepository.save(
-      this.mapper.map<CreateUserDto, User>(user, User),
-    );
+    const userEntity: User = this.mapper.map<CreateUserDto, User>(user, User);
+    // Save the user and return it.
+    const userCreated: User = await this._userRepository.save(userEntity);
     // Map the user to the GetUserDto and return it.
     return this.mapper.map<User, GetUserDto>(userCreated, GetUserDto);
   }
@@ -49,7 +56,7 @@ export class UserService {
     !id && new BadRequestException('id must be sent');
     // Validate if the user exists.
     const userExists: User = await this._userRepository.findOne(id, {
-      where: { status: 'ACTIVE' },
+      where: { status: this._statusEnum.ACTIVE },
     });
     // Validate if the user exists.
     !userExists && new NotFoundException();
@@ -65,11 +72,13 @@ export class UserService {
     !id && new BadRequestException('id must be sent');
     // Validate if the user exists.
     const userExists: User = await this._userRepository.findOne(id, {
-      where: { status: 'ACTIVE' },
+      where: { status: this._statusEnum.ACTIVE },
     });
     // Validate if the user exists.
     !userExists && new NotFoundException();
     // Delete the user.
-    await this._userRepository.update(id, { status: 'INACTIVE' });
+    await this._userRepository.update(id, {
+      status: this._statusEnum.INACTIVE,
+    });
   }
 }
