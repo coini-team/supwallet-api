@@ -28,24 +28,12 @@ export class NftService {
    */
   async deployERC721Token(
     wallet: Wallet,
-    //tokenParams: { name: string; symbol: string }, chain:string
-    tokenParams: DeployNftDto, chain:string
+    tokenParams: DeployNftDto,
+    rpcUrl:string
   ): Promise<any> {
     const { name, symbol } = tokenParams;
     const methodName = 'createNewContract(string,string)'; // TODO: Change this to the correct method name from the ABI.
-
-    if (!chain) {
-      throw new NotFoundException("Falta el parametro 'chain' en el QueryParam");
-    }
-
-    // traer network url
-    const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
-    if (!urlNetwork) {
-        throw new NotFoundException("Chain no encontrado en la base de datos");
-    }
-
-    const network = urlNetwork.rpc_url;
-    const provider = new ethers.JsonRpcProvider(network);
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
 
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC721_FACTORY_ADDRESS),
@@ -164,28 +152,30 @@ export class NftService {
     }
   }
 
-  async setTokenURI(tokenId: number, tokenURI: string): Promise<void> {
-    const wallet = this.walletService.getWallet();
-    const contractERC721 = await this.getERC721Contract(wallet);
-    const owner = await contractERC721.ownerOf(tokenId);
+  // TODO: receive chain
+  // async setTokenURI(tokenId: number, tokenURI: string): Promise<void> {
+  //   const wallet = this.walletService.getWallet();
+  //   const contractERC721 = await this.getERC721Contract(wallet);
+  //   const owner = await contractERC721.ownerOf(tokenId);
 
-    if (owner !== (await wallet.getAddress())) {
-      throw new Error("No tienes permiso para establecer el URI del token.");
-    }
+  //   if (owner !== (await wallet.getAddress())) {
+  //     throw new Error("No tienes permiso para establecer el URI del token.");
+  //   }
 
-    // Llamar a la función del contrato para establecer el URI del token
-    await contractERC721.setTokenURI(tokenId, tokenURI);
-  }
+  //   // Llamar a la función del contrato para establecer el URI del token
+  //   await contractERC721.setTokenURI(tokenId, tokenURI);
+  // }
 
-  async getOwnerOfToken(tokenId: number): Promise<string> {
-    const wallet = this.walletService.getWallet();
-    const contractERC721 = await this.getERC721Contract(wallet);
+  // TODO: receive chain
+  // async getOwnerOfToken(tokenId: number): Promise<string> {
+  //   const wallet = this.walletService.getWallet();
+  //   const contractERC721 = await this.getERC721Contract(wallet);
 
-    if (!(await contractERC721.ownerOf(tokenId)).call()) {
-      throw new Error('Token no existente');
-    }
+  //   if (!(await contractERC721.ownerOf(tokenId)).call()) {
+  //     throw new Error('Token no existente');
+  //   }
 
-    // Llamar a la función del contrato para obtener el propietario del token
-    return await contractERC721.ownerOf(tokenId);
-  }
+  //   // Llamar a la función del contrato para obtener el propietario del token
+  //   return await contractERC721.ownerOf(tokenId);
+  // }
 }

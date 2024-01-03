@@ -7,6 +7,7 @@ import { ConfigService } from '../../../config/config.service';
 import { Blockchain } from '../../../config/config.keys';
 import { Repository } from 'typeorm';
 import { InjectRepository } from "@nestjs/typeorm";
+import { Network } from 'src/modules/chain/entities/network.entity';
 
 @Injectable()
 export class WalletService {
@@ -14,17 +15,23 @@ export class WalletService {
     private readonly configService: ConfigService,
     @InjectRepository(Wallet)
     private readonly walletRepository: Repository<Wallet>,
-  ) {}
+    @InjectRepository(Network)
+    private readonly networkRepository: Repository<Network>,
+  ) { }
 
-  public getWallet(): Wallet {
-    const provider: JsonRpcProvider = new ethers.JsonRpcProvider(
-      this.configService.get(Blockchain.MUMBAI_TESTNET_URL),
-    );
+  public getWallet(rpcUrl: string): Wallet {
+    const provider: JsonRpcProvider = new ethers.JsonRpcProvider(rpcUrl);
     const wallet: Wallet = new Wallet(
       this.configService.get(Blockchain.WALLET_PRIVATE_KEY),
       provider,
     );
     return wallet;
+  }
+
+  // traer network url
+  public async getRpcUrl(chain: string): Promise<string> {
+    const network = await this.networkRepository.findOne({ name: chain });
+    return network.rpc_url;
   }
 
   /**

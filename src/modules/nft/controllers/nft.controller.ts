@@ -38,14 +38,14 @@ export class NftController {
     @Query('chain') chain: string,
   ): Promise<any> {
     try {
+      const rpcUrl = await this.walletService.getRpcUrl(chain);
       // Get Wallet to Sign.
-      const wallet = this.walletService.getWallet();
-
+      const wallet = this.walletService.getWallet(rpcUrl);
       //call method to deploy the ERC721 token
       const result = await this.nftService.deployERC721Token(
         wallet,
         tokenParams,
-        chain,
+        rpcUrl,
       );
       return { success: true, data: result };
     } catch (error) {
@@ -65,16 +65,18 @@ export class NftController {
     return { tokenURI };
   }
 
-  @Post(':tokenId/set-uri')
-  async setTokenURI(
-    @Param('tokenId') tokenId: number,
-    @Body('tokenURI') tokenURI: string,
-  ): Promise<void> {
-    await this.nftService.setTokenURI(tokenId, tokenURI);
-  }
+  // TODO: receive chain
+  // @Post(':tokenId/set-uri')
+  // async setTokenURI(
+  //   @Param('tokenId') tokenId: number,
+  //   @Body('tokenURI') tokenURI: string,
+  // ): Promise<void> {
+  //   await this.nftService.setTokenURI(tokenId, tokenURI);
+  // }
 
-  @Get(':tokenId/owner')
-  async getOwnerOfToken(@Param('tokenId') tokenId: number): Promise<string> {
-    return this.nftService.getOwnerOfToken(tokenId);
-  }
+  // TODO: receive chain
+  // @Get(':tokenId/owner')
+  // async getOwnerOfToken(@Param('tokenId') tokenId: number): Promise<string> {
+  //   return this.nftService.getOwnerOfToken(tokenId);
+  // }
 }

@@ -23,23 +23,11 @@ export class TokenService {
   async deployERC20Token(
     wallet: Wallet,
     tokenParams: DeployTokenDto,
-    chain: string,
+    rpcUrl: string,
   ): Promise<any> {
     const { name, symbol, initialSupply } = tokenParams;
     const methodName = 'CreateNewERC20Token(string,string,uint256)';
-
-    if (!chain) {
-      throw new NotFoundException("Falta el parametro 'chain' en el QueryParam");
-    }
-
-    // traer network url
-    const urlNetwork = await this.NetworkRepository.findOne({ name: chain });
-    if (!urlNetwork) {
-      throw new NotFoundException('Chain no encontrado en la base de datos');
-    }
- 
-    const network = urlNetwork.rpc_url;
-    const provider = new ethers.JsonRpcProvider(network);
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
 
     const contract = new ethers.Contract(
       this.configService.get(Blockchain.ERC20_FACTORY_ADDRESS),
