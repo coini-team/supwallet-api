@@ -30,7 +30,6 @@ export class ProjectService {
     // Create Project.
     const project: Project = this.projectRepository.create({
       ...createProjectDto,
-      private_key: accessToken,
       api_key: accessToken,
     });
     // Save Project.

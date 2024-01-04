@@ -1,5 +1,13 @@
 // Third Party Dependencies.
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // Local Dependencies.
 import { StatusEnum } from '../../../shared/enums/status.enum';
@@ -38,4 +46,10 @@ export class Network {
   @ManyToOne(() => Chain, (chain) => chain.networks)
   @JoinColumn({ name: 'chain_id' })
   chain: Chain;
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

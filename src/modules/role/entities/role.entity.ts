@@ -1,28 +1,33 @@
+// Third Party Dependencies.
 import {
-  Entity,
-  PrimaryGeneratedColumn,
+  BaseEntity,
   Column,
   CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { StatusEnum } from '../../../shared/enums/status.enum';
 
-@Entity()
-export class Project {
+// Local Dependencies.
+import { StatusEnum } from '../../../shared/enums/status.enum';
+import { User } from '../../user/entities/user.entity';
+
+@Entity('roles')
+export class Role extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  organization_id: number;
-
-  @Column({ length: 500 })
+  @Column({ type: 'varchar', length: 20, nullable: false })
   name: string;
 
-  @Column()
-  mode: string;
+  @Column({ type: 'varchar', nullable: false })
+  description: string;
 
-  @Column()
-  api_key: string;
+  @ManyToMany(() => User, (user) => user.roles)
+  @JoinColumn()
+  users: User[];
 
   @Column({
     type: 'enum',

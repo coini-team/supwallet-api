@@ -1,5 +1,12 @@
 // Third Party Dependencies.
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // Local Dependencies.
 import { StatusEnum } from '../../../shared/enums/status.enum';
@@ -25,4 +32,10 @@ export class Crypto {
 
   @OneToMany(() => CryptoNetwork, (cryptoNetwork) => cryptoNetwork.crypto)
   cryptoNetworks: CryptoNetwork[];
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }

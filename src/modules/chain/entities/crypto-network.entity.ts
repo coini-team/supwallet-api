@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 // Local Dependencies.
@@ -33,4 +35,10 @@ export class CryptoNetwork {
   @ManyToOne(() => Crypto, (crypto) => crypto.cryptoNetworks)
   @JoinColumn({ name: 'crypto_id' })
   crypto: Crypto;
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  updatedAt: Date;
 }
