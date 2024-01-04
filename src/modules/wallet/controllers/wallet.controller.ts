@@ -20,4 +20,14 @@ export class WalletController {
     }
   }
 
+  @Post('smart-account')
+  createSmartAccount() {
+    try {
+      return 'OK';
+    } catch (error) {
+      throw error;
+    }
+  
+  }
+
 }

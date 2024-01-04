@@ -43,11 +43,19 @@ export class WalletService {
     return this.walletRepository.find();
   }
 
+  /**
+   * create random wallet
+   * @returns wallet info
+   */
   public createRandomWallet(): HDNodeWallet {
     const randomWallet = Wallet.createRandom();
     console.log(`New Wallet Address: ${randomWallet.address}`);
     console.log(`Private Key: ${randomWallet.privateKey}`);
 
     return randomWallet;
+  }
+
+  public createSmartAccount() {
+
   }
 }
