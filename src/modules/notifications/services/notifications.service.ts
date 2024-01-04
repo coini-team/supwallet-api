@@ -18,7 +18,7 @@ export class NotificationsService {
   constructor(
     private readonly walletService: WalletService,
     private readonly chainService: ChainService,
-  ) {}
+  ) { }
 
   /**
    * @memberof NotificationsService
@@ -48,9 +48,10 @@ export class NotificationsService {
    * @returns {Promise<void>}
    */
   async processTransferEvents() {
-    // Get All Networks from Database.
+    // Get all networks
     const networks: Network[] = await this.chainService.getAllNetworks();
-    // Map Networks and Create Providers.
+
+    // Map networks and create providers
     const providers = await Promise.all(
       networks.map(async (network) => {
         return {
@@ -64,16 +65,18 @@ export class NotificationsService {
       }),
     );
 
-    // Get All Crypto Networks from Database.
-    const cryptoNetworks: CryptoNetwork[] =
-      await this.chainService.getCryptoNetworks();
-    // Get All Wallets from Database.
+    // Get all crypto networks
+    const cryptoNetworks: CryptoNetwork[] = await this.chainService.getCryptoNetworks();
+
+    // Get all wallets
     const wallets = await this.walletService.getAllWallets();
-    // Map Crypto Networks and Create Contracts.
+
+    // Map Crypto Networks and Create Contracts
     cryptoNetworks.forEach((cryptoNetwork) => {
-      // For each wallet, listen for Transfer events.
+      // For each wallet, listen for Transfer events
       wallets.forEach((wallet) => {
-        // Create Contract.
+        
+        // Create ERC20 contract
         const contract = new ethers.Contract(
           cryptoNetwork.contract,
           erc20TokenABI,
@@ -81,11 +84,15 @@ export class NotificationsService {
             (provider) => provider.id === cryptoNetwork.network.id,
           ),
         );
-        // Filter to only get Transfer events from the wallet.
+
+        // Filter to only income transfer events into the wallet
         const filter = contract.filters.Transfer(null, wallet.address);
-        // Listen for events on the contract.
         contract.on(filter, async (event) => {
-          console.log('event: ', event);
+          console.log('=> processTransferEvents: ', event);
+          console.log('=> network:', `${cryptoNetwork.network.id} - ${cryptoNetwork.network.name}`);
+          console.log('=> contract:', cryptoNetwork.contract);
+          // TODO: actualizar status en el API de coini
+          // TODO: move token to recognized or no recognized wallet
         });
       });
     });
