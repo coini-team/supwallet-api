@@ -64,13 +64,15 @@ export class WalletService {
     return randomWallet;
   }
 
-  public async createSmartAccount() {
+  /**
+   * create and return Alchemy provider
+   * @returns provider
+   */
+  public getAlchemyProvider() {
     const chain = arbitrumSepolia;
     const apiKey = this.configService.get(Alchemy.ALCHEMY_API_KEY);
     const privateKey = `0x${this.configService.get(Blockchain.WALLET_PRIVATE_KEY)}` as Hex;
     const owner = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
-
-    // Create a provider to send user operations from your smart account
     const provider = new AlchemyProvider({
       apiKey,
       chain,
@@ -83,9 +85,42 @@ export class WalletService {
           factoryAddress: getDefaultLightAccountFactoryAddress(chain),
         })
     );
+    return provider;
+  }
+
+  /**
+   * create smart account based on EOA
+   * @returns smart account address
+   */
+  public async createSmartAccount() {
+    const provider = this.getAlchemyProvider();
     const smartAccountAddress = await provider.getAddress();
-    console.log("Smart Account Address: ", smartAccountAddress);
+    console.log("Smart account address: ", smartAccountAddress);
     return smartAccountAddress;
+  }
+
+  /**
+   * send user operation to arbitrum blockchain
+   * @returns {
+   *  user operation hash
+   *  transaction hash
+   * }
+   */
+  public async sendUserOperation() {
+    const provider = this.getAlchemyProvider();
+    const vitalikAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" as Address;
+    const { hash: uoHash } = await provider.sendUserOperation({
+      target: vitalikAddress,
+      data: "0x",
+      value: 0n,
+    });
+    console.log("UserOperation hash: ", uoHash);
+    const txHash = await provider.waitForUserOperationTransaction(uoHash);
+    console.log("Transaction hash: ", txHash);
+    return {
+      uoHash,
+      txHash,
+    };
   }
 
 }

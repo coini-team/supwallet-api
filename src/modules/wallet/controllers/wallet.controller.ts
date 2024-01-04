@@ -31,6 +31,20 @@ export class WalletController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @Post('send-op')
+  async sendUserOperation() {
+    try {
+      const { uoHash, txHash } = await this.walletService.sendUserOperation();
+      return {
+        success: true,
+        uoHash,
+        txHash,
+      };
+    } catch (error) {
+      throw error;
+    }
   
   }
 
