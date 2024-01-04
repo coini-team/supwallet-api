@@ -54,3 +54,12 @@ export enum Blockchain {
 export enum Security {
   SECURE_ENCRYPTION_KEY = 'SECURE_ENCRYPTION_KEY',
 }
+
+/**
+ * @description Enum for alchemy keys
+ * @enum {string}
+ * @readonly
+ */
+export enum Alchemy {
+  ALCHEMY_API_KEY = 'ALCHEMY_API_KEY',
+}

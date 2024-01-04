@@ -2,9 +2,18 @@
 import { Injectable } from '@nestjs/common';
 import { ethers, HDNodeWallet, JsonRpcProvider, Wallet } from 'ethers';
 
+// Alchemy dependencies
+import {
+  LightSmartContractAccount,
+  getDefaultLightAccountFactoryAddress,
+} from "@alchemy/aa-accounts";
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { Address, LocalAccountSigner, type Hex } from "@alchemy/aa-core";
+import { arbitrumSepolia } from "viem/chains";
+
 // Local Dependencies.
 import { ConfigService } from '../../../config/config.service';
-import { Blockchain } from '../../../config/config.keys';
+import { Blockchain, Alchemy } from '../../../config/config.keys';
 import { Repository } from 'typeorm';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Network } from 'src/modules/chain/entities/network.entity';
@@ -56,6 +65,7 @@ export class WalletService {
   }
 
   public createSmartAccount() {
-
+    const chain = arbitrumSepolia;
+    const apiKey = this.configService.get(Blockchain.WALLET_PRIVATE_KEY);
   }
 }
