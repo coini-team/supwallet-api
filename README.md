@@ -58,6 +58,22 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## How to work with database
+
+### Best practice to create a database migration
+Run the following command:
+
+```
+yarn migrations:generate <action-module-type>
+```
+
+Examples:
+- yarn migrations:generate create-user-table
+- yarn migrations:generate add-user-email-column
+
+Note:
+- Use Kebab Case standar for migration name.
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).

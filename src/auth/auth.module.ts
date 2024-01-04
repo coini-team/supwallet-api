@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 // Local Dependencies.
 import { MessageModule } from '../modules/message/message.module';
-import { AuthRepository } from './Repositories/auth.repository';
+import { AuthRepository } from './repositories/auth.repository';
 import { Role } from '../modules/role/entities/role.entity';
 import { ConfigService } from '../config/config.service';
 import { JwtStrategy } from './strategies/jwt.strategy';

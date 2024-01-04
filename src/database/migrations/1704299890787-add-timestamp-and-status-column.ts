@@ -22,6 +22,8 @@ export class addTimestampAndStatusColumn1704299890787 implements MigrationInterf
         await queryRunner.query(`ALTER TABLE \`project\` ADD \`created_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`);
         await queryRunner.query(`ALTER TABLE \`project\` DROP COLUMN \`updated_at\``);
         await queryRunner.query(`ALTER TABLE \`project\` ADD \`updated_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)`);
+        await queryRunner.query(`ALTER TABLE \`receiver_wallet\` ADD \`created_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`);
+        await queryRunner.query(`ALTER TABLE \`receiver_wallet\` ADD \`updated_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
@@ -43,6 +45,8 @@ export class addTimestampAndStatusColumn1704299890787 implements MigrationInterf
         await queryRunner.query(`ALTER TABLE \`chain\` DROP COLUMN \`created_at\``);
         await queryRunner.query(`ALTER TABLE \`chain\` DROP COLUMN \`status\``);
         await queryRunner.query(`ALTER TABLE \`roles\` DROP COLUMN \`status\``);
+        await queryRunner.query(`ALTER TABLE \`receiver_wallet\` DROP COLUMN \`updated_at\``);
+        await queryRunner.query(`ALTER TABLE \`receiver_wallet\` DROP COLUMN \`created_at\``);
     }
 
 }

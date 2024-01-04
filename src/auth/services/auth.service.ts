@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MessageService } from '../../modules/message/services/message.service';
 import { ConfigService } from 'src/config/config.service';
 import { JwtEnv } from '../../config/config.keys';
-import { AuthRepository } from '../Repositories/auth.repository';
+import { AuthRepository } from '../repositories/auth.repository';
 import { SignInDto, SignUpDto } from '../dto';
 import { compare } from 'bcryptjs';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
