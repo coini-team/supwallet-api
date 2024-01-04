@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Query } from '@nestjs/common';
-import { WalletService } from '../services/wallet.service';
+import { WalletService } from 'src/modules/wallet/services/wallet.service';
 
 @Controller('wallet')
 export class WalletController {
