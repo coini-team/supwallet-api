@@ -21,9 +21,13 @@ export class WalletController {
   }
 
   @Post('smart-account')
-  createSmartAccount() {
+  async createSmartAccount() {
     try {
-      return 'OK';
+      const smartAccount = await this.walletService.createSmartAccount();
+      return {
+        success: true,
+        smartAccountAddress: smartAccount,
+      };
     } catch (error) {
       throw error;
     }

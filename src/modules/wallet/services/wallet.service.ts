@@ -64,8 +64,28 @@ export class WalletService {
     return randomWallet;
   }
 
-  public createSmartAccount() {
+  public async createSmartAccount() {
     const chain = arbitrumSepolia;
-    const apiKey = this.configService.get(Blockchain.WALLET_PRIVATE_KEY);
+    const apiKey = this.configService.get(Alchemy.ALCHEMY_API_KEY);
+    const privateKey = `0x${this.configService.get(Blockchain.WALLET_PRIVATE_KEY)}` as Hex;
+    const owner = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
+
+    // Create a provider to send user operations from your smart account
+    const provider = new AlchemyProvider({
+      apiKey,
+      chain,
+    }).connect(
+      (rpcClient) =>
+        new LightSmartContractAccount({
+          rpcClient,
+          owner,
+          chain,
+          factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+        })
+    );
+    const smartAccountAddress = await provider.getAddress();
+    console.log("Smart Account Address: ", smartAccountAddress);
+    return smartAccountAddress;
   }
+
 }
