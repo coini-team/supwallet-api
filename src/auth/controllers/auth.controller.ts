@@ -15,7 +15,7 @@ import { SignInDto, SignUpDto } from '../dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly _authService: AuthService) {}
+  constructor(private readonly _authService: AuthService) { }
 
   /**
    * @memberof AuthController

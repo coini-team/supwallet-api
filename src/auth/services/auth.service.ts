@@ -71,7 +71,7 @@ export class AuthService {
     };
 
     const tokens = this.generateTokens(payload);
-
+    console.log('=> verify:', this.validToken(tokens.accessToken));
     return {
       user: payload,
       tokens,
@@ -163,6 +163,13 @@ export class AuthService {
     return this.generateTokens({
       id,
       name,
+    });
+  }
+
+  public validToken(accessToken: string) {
+    this._jwtService.verify(accessToken, {
+      // secret: 'test',
+      secret: this.configService.get(JwtEnv.JWT_REFRESH_SECRET),
     });
   }
 }

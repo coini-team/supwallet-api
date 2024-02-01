@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { WalletService } from 'src/modules/wallet/services/wallet.service';
 
 @Controller('wallet')
@@ -6,6 +7,7 @@ export class WalletController {
   constructor(private readonly walletService: WalletService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   createWallet() {
     try {
       const wallet = this.walletService.createRandomWallet();

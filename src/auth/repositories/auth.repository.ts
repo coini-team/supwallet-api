@@ -34,7 +34,6 @@ export class AuthRepository extends Repository<User> {
       password: await hash(password, salt),
       roles: [defaultRole],
     });
-    console.log('Por aqui andamos');
 
     // Save user.
     await this._userRepository.save(newUser);
