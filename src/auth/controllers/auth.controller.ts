@@ -17,6 +17,21 @@ import { SignInDto, SignUpDto } from '../dto';
 export class AuthController {
   constructor(private readonly _authService: AuthService) { }
 
+  @Post('validate')
+  async validatePhoneNumber() {
+    return 'ok1';
+  }
+
+  @Post('account')
+  async createWallet() {
+    return 'ok2';
+  }
+
+  @Post('session')
+  async startSession() {
+    return 'ok3';
+  }
+
   /**
    * @memberof AuthController
    * @description This method is used to sign up a user.
