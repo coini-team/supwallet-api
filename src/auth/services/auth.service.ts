@@ -34,7 +34,7 @@ export class AuthService {
     private readonly _authRepository: AuthRepository,
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async signUp(user: SignUpDto) {
     const { email }: SignUpDto = user;
@@ -171,5 +171,16 @@ export class AuthService {
       // secret: 'test',
       secret: this.configService.get(JwtEnv.JWT_REFRESH_SECRET),
     });
+  }
+
+  /**
+   * 
+   * @param phone 
+   */
+  async validateUser(phone: string): Promise<boolean> {
+    const userExist: User = await this._userRepository.findOne({
+      where: { phone },
+    });
+    return userExist ? true : false;
   }
 }

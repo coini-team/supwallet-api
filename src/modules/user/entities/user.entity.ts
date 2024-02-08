@@ -30,6 +30,12 @@ export class User {
   @Column({ type: 'varchar', nullable: false })
   password: string;
 
+  @Column({ name: 'phone', length: 20, type: 'varchar' })
+  phone: string;
+
+  @Column({ name: 'wallet', length: 50, type: 'varchar' })
+  wallet: string;
+
   @ManyToMany(() => Role, (role) => role.users, { eager: true })
   @JoinTable({
     name: 'user_roles',
@@ -43,6 +49,7 @@ export class User {
     enum: StatusEnum,
     default: StatusEnum.ACTIVE,
   })
+  
   status: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })

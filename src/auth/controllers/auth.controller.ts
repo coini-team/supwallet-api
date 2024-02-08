@@ -18,8 +18,12 @@ export class AuthController {
   constructor(private readonly _authService: AuthService) { }
 
   @Post('validate')
-  async validatePhoneNumber() {
-    return 'ok1';
+  async validatePhoneNumber(phone: string) {
+    const userExists = await this._authService.validateUser(phone);
+    if (userExists) {
+      return { result: true, message: 'El usuario existe' };
+    }
+    return { result: false, message: 'El usuario no existe' };
   }
 
   @Post('account')
