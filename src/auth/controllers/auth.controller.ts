@@ -11,14 +11,15 @@ import {
 import { GetUser } from '../../modules/user/decorators/user.decorator';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthService } from '../services/auth.service';
-import { SignInDto, SignUpDto } from '../dto';
+import { SignInDto, SignUpDto, ValidateDto, AccountDto } from '../dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly _authService: AuthService) { }
 
   @Post('validate')
-  async validatePhoneNumber(phone: string) {
+  async validatePhoneNumber(@Body() payload: ValidateDto) {
+    const { phone } = payload;
     const userExists = await this._authService.validateUser(phone);
     if (userExists) {
       return { result: true, message: 'El usuario existe' };
@@ -27,13 +28,16 @@ export class AuthController {
   }
 
   @Post('account')
-  async createWallet() {
-    return 'ok2';
+  async createWallet(@Body() payload: AccountDto) {
+    const { phone, password } = payload;
+    const wallet = await this._authService.createAccount(phone, password);
+    return { wallet };
   }
 
   @Post('session')
-  async startSession() {
-    return 'ok3';
+  async startSession(@Body() payload: AccountDto) {
+    const { phone, password } = payload;
+    return await this._authService.startSession(phone, password);
   }
 
   /**

@@ -183,4 +183,39 @@ export class AuthService {
     });
     return userExist ? true : false;
   }
+
+  /**
+   * 
+   * @param phone 
+   * @param password 
+   * @returns 
+   */
+  async createAccount(phone: string, password: string) {
+    const userExists = await this.validateUser(phone);
+    if (userExists) throw new ConflictException('The phone already exists');
+    console.log('=> data:', `${phone} - ${password}`);
+    const account: User = await this._userRepository.create({
+      name: '',
+      email: '',
+      password,
+      phone,
+      wallet: '0x82a6505bc726018aC603fa072aAE2a0474cdE45b',
+    });
+    console.log('=> account:', account);
+    await this._userRepository.save(account);
+    return '0x82a6505bc726018aC603fa072aAE2a0474cdE45b';
+  }
+
+  /**
+   * 
+   * @param phone 
+   * @param password 
+   * @returns 
+   */
+  async startSession(phone: string, password: string) {
+    return {
+      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0OTUyOGE3LTFkMzctNDhjOS05Mzk2LWUzYjlkMTUyNTYxYSIsIm5hbWUiOiJKb2VsIiwiZW1haWwiOiJqb2V2ZWdhczIwMjNAZ21haWwuY29tIiwiaWF0IjoxNzA3MTIzMzgyLCJleHAiOjE3MDc3MjgxODJ9.6MO1zCWb-pyXg6GWwi64IexvhorQ_DWMQzOrLysEkJU',
+      phone,
+    }
+  }
 }
