@@ -30,6 +30,9 @@ export class User {
   @Column({ type: 'varchar', nullable: false })
   password: string;
 
+  @Column({ name: 'access_token', length: 200, type: 'varchar' })
+  accessToken: string;
+
   @Column({ name: 'phone', length: 20, type: 'varchar' })
   phone: string;
 

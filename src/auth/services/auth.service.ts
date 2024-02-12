@@ -17,7 +17,8 @@ import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { RoleTypeEnum } from '../../shared/enums/role-type.enum';
 import { Repository } from "typeorm";
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from "../../modules/user/entities/user.entity";
+import { User } from '../../modules/user/entities/user.entity';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from 'src/shared/constants/auth.constant';
 
 @Injectable()
 export class AuthService {
@@ -177,11 +178,22 @@ export class AuthService {
    * 
    * @param phone 
    */
-  async validateUser(phone: string): Promise<boolean> {
+  async validateUser(phone: string) {
     const userExist: User = await this._userRepository.findOne({
       where: { phone },
     });
-    return userExist ? true : false;
+    if (userExist) {
+      const payload = {
+        id: userExist.id,
+        phone: userExist.phone,
+      };
+      const { accessToken } = this.generateTokens(payload);
+      console.log('=> accessToken:', accessToken);
+    }
+    if (userExist) {
+      return { result: true };
+    }
+    return { result: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
   }
 
   /**

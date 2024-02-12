@@ -20,11 +20,7 @@ export class AuthController {
   @Post('validate')
   async validatePhoneNumber(@Body() payload: ValidateDto) {
     const { phone } = payload;
-    const userExists = await this._authService.validateUser(phone);
-    if (userExists) {
-      return { result: true, message: 'El usuario existe' };
-    }
-    return { result: false, message: 'El usuario no existe' };
+    return await this._authService.validateUser(phone);
   }
 
   @Post('account')
