@@ -188,7 +188,9 @@ export class AuthService {
         phone: userExist.phone,
       };
       const { accessToken } = this.generateTokens(payload);
-      console.log('=> accessToken:', accessToken);
+      await this._userRepository.update(userExist.id, {
+        accessToken
+      });
     }
     if (userExist) {
       return { result: true };
@@ -203,9 +205,10 @@ export class AuthService {
    * @returns 
    */
   async createAccount(phone: string, password: string) {
-    const userExists = await this.validateUser(phone);
-    if (userExists) throw new ConflictException('The phone already exists');
-    console.log('=> data:', `${phone} - ${password}`);
+    const userExist: User = await this._userRepository.findOne({
+      where: { phone },
+    });
+    if (userExist) throw new ConflictException(ERROR_MESSAGES.USER_ALREADY_EXIST);
     const account: User = await this._userRepository.create({
       name: '',
       email: '',
@@ -213,8 +216,15 @@ export class AuthService {
       phone,
       wallet: '0x82a6505bc726018aC603fa072aAE2a0474cdE45b',
     });
-    console.log('=> account:', account);
-    await this._userRepository.save(account);
+    const user = await this._userRepository.save(account);
+    const payload = {
+      id: user.id,
+      phone: user.phone,
+    };
+    const { accessToken } = this.generateTokens(payload);
+    await this._userRepository.update(user.id, {
+      accessToken
+    });
     return '0x82a6505bc726018aC603fa072aAE2a0474cdE45b';
   }
 
@@ -225,9 +235,20 @@ export class AuthService {
    * @returns 
    */
   async startSession(phone: string, password: string) {
-    return {
-      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0OTUyOGE3LTFkMzctNDhjOS05Mzk2LWUzYjlkMTUyNTYxYSIsIm5hbWUiOiJKb2VsIiwiZW1haWwiOiJqb2V2ZWdhczIwMjNAZ21haWwuY29tIiwiaWF0IjoxNzA3MTIzMzgyLCJleHAiOjE3MDc3MjgxODJ9.6MO1zCWb-pyXg6GWwi64IexvhorQ_DWMQzOrLysEkJU',
-      phone,
+    const userExist: User = await this._userRepository.findOne({
+      where: { phone, password },
+    });
+    if (userExist) {
+      const payload = {
+        id: userExist.id,
+        phone: userExist.phone,
+      };
+      const { accessToken } = this.generateTokens(payload);
+      await this._userRepository.update(userExist.id, {
+        accessToken
+      });
+      return { result: true, accessToken };
     }
+    return { result: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
   }
 }
