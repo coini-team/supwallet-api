@@ -193,9 +193,9 @@ export class AuthService {
       });
     }
     if (userExist) {
-      return { result: true };
+      return { success: true };
     }
-    return { result: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
+    return { success: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
   }
 
   /**
@@ -225,7 +225,10 @@ export class AuthService {
     await this._userRepository.update(user.id, {
       accessToken
     });
-    return '0x82a6505bc726018aC603fa072aAE2a0474cdE45b';
+    return {
+      success: true,
+      wallet: '0x82a6505bc726018aC603fa072aAE2a0474cdE45b',
+    };
   }
 
   /**
@@ -247,8 +250,8 @@ export class AuthService {
       await this._userRepository.update(userExist.id, {
         accessToken
       });
-      return { result: true, accessToken };
+      return { success: true, accessToken };
     }
-    return { result: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
+    return { success: false, message: ERROR_MESSAGES.USER_NOT_FOUND };
   }
 }

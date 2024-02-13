@@ -26,8 +26,8 @@ export class AuthController {
   @Post('account')
   async createWallet(@Body() payload: AccountDto) {
     const { phone, password } = payload;
-    const wallet = await this._authService.createAccount(phone, password);
-    return { wallet };
+    const temp = await this._authService.createAccount(phone, password);
+    return temp;
   }
 
   @Post('session')
