@@ -74,6 +74,18 @@ Examples:
 Note:
 - Use Kebab Case standar for migration name.
 
+## Nest CLI commands
+```
+nest generate module users
+```
+```
+nest generate controller users --no-spec
+```
+```
+nest generate service users --no-spec
+```
+
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
