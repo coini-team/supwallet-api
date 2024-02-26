@@ -1,30 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import * as QRCode from 'qrcode';
-import { Buffer } from 'buffer';
-import * as fs from 'fs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/modules/user/entities/user.entity';
 
 @Injectable()
 export class CoreService {
+    constructor(@InjectRepository(User)
+    private readonly _userRepository: Repository<User>) {}
 
-    /**
-     * 
-     * @param phone 
-     */
-    async generateQR(text) {
-        try {
-            const qrCodeDataUrl = await QRCode.toDataURL(text, { errorCorrectionLevel: 'H' });
-            const buffer = Buffer.from(qrCodeDataUrl.replace(/^data:image\/png;base64,/, ''), 'base64');
-            // Specify the path and name of the file
-            const filePath = `public/${text}.png`;
-            // Write the buffer to a JPG file
-            fs.writeFile(filePath, buffer, (err) => {
-                if (err) throw err;
-                console.log('The file has been saved!');
-            });
-            return qrCodeDataUrl;
-        } catch (error) {
-            console.error('Error generating QR code', error);
-            throw error;
-        }
+    async getWallet(phone: string) {
+        const userExist: User = await this._userRepository.findOne({
+            where: { phone },
+        });
+        if (!userExist) throw new Error('User not found');
+        return { success: true, wallet: userExist.wallet, imageQR: userExist.qrCode };
     }
+
 }

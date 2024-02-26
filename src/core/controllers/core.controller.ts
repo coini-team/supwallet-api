@@ -6,19 +6,16 @@ import {
     ValidationPipe,
   } from '@nestjs/common';
 import { CoreService } from '../services/core.service';
+import { UserDto } from '../dto/user.dto';
 
 @Controller('core')
 export class CoreController {
     constructor(private readonly coreService: CoreService) { }
 
     @Post('qr')
-    async receivePayment() {
+    async receivePayment(@Body() payload: UserDto) {
+        const { phone } = payload;
         console.log('=> receivePayment');
-        // await this.coreService.generateQR();
-        return {
-            success: true,
-            wallet: '0x8f8e8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f',
-            imageQR: 'http://localhost:4002/qr.png',
-        };
+        return await this.coreService.getWallet(phone);
     }
 }
