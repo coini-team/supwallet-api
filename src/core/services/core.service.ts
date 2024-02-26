@@ -13,6 +13,7 @@ export class CoreService {
             where: { phone },
         });
         if (!userExist) throw new Error('User not found');
+        console.log('=> result:', `imageQR: ${userExist.qrCode}`);
         return { success: true, wallet: userExist.wallet, imageQR: userExist.qrCode };
     }
 
