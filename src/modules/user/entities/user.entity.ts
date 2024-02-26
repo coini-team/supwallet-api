@@ -39,6 +39,9 @@ export class User {
   @Column({ name: 'wallet', length: 50, type: 'varchar' })
   wallet: string;
 
+  @Column({ name: 'qr_code', length: 150, type: 'varchar', nullable: true })
+  qrCode: string;
+
   @ManyToMany(() => Role, (role) => role.users, { eager: true })
   @JoinTable({
     name: 'user_roles',
