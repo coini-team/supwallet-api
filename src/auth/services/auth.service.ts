@@ -209,12 +209,13 @@ export class AuthService {
       where: { phone },
     });
     if (userExist) throw new ConflictException(ERROR_MESSAGES.USER_ALREADY_EXIST);
+    const wallet = '0x82a6505bc726018aC603fa072aAE2a0474cdE45b';
     const account: User = await this._userRepository.create({
       name: '',
       email: '',
       password,
       phone,
-      wallet: '0x82a6505bc726018aC603fa072aAE2a0474cdE45b',
+      wallet,
     });
     const user = await this._userRepository.save(account);
     const payload = {
@@ -227,7 +228,7 @@ export class AuthService {
     });
     return {
       success: true,
-      wallet: '0x82a6505bc726018aC603fa072aAE2a0474cdE45b',
+      wallet,
     };
   }
 

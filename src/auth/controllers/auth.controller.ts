@@ -19,12 +19,14 @@ export class AuthController {
 
   @Post('validate')
   async validatePhoneNumber(@Body() payload: ValidateDto) {
+    console.log('=> validatePhoneNumber');
     const { phone } = payload;
     return await this._authService.validateUser(phone);
   }
 
   @Post('account')
   async createWallet(@Body() payload: AccountDto) {
+    console.log('=> createWallet');
     const { phone, password } = payload;
     const temp = await this._authService.createAccount(phone, password);
     return temp;
@@ -32,6 +34,7 @@ export class AuthController {
 
   @Post('session')
   async startSession(@Body() payload: AccountDto) {
+    console.log('=> startSession');
     const { phone, password } = payload;
     return await this._authService.startSession(phone, password);
   }
