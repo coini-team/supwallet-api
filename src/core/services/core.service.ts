@@ -39,13 +39,17 @@ export class CoreService {
         return { success: true, network: networkNames };
     }
 
-    async balance(phone: string) {
+    async balance(phone: string, network: string) {
         const userExist: User = await this._userRepository.findOne({
             where: { phone },
         });
         if (!userExist) throw new Error('User not found');
+        const networkExist: Network = await this._networkRepository.findOne({
+            where: { user: userExist, name: network },
+        });
+        if (!networkExist) throw new Error('Network not found for the user');
         const tokens: Tokens[] = await this._tokensRepository.find({
-            where: { user: userExist },
+            where: { user: userExist, network: networkExist },
         });
 
         // Mapear los tokens para incluir solo los campos 'name' y 'amount'

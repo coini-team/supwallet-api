@@ -25,8 +25,8 @@ export class CoreController {
 
     @Post('balance')
     async balance(@Body() payload: Partial<UserDto>) {
-        const { phone } = payload;
-        return await this.coreService.balance(phone);
+        const { phone, network } = payload;
+        return await this.coreService.balance(phone, network);
     }
 
     @Post('balance/tokens')
