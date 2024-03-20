@@ -7,11 +7,14 @@ import {
   ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 // Local Dependencies.
 import { StatusEnum } from '../../../shared/enums/status.enum';
 import { Chain } from './chain.entity';
+import { Tokens } from '../../../core/entities/tokens.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Network {
@@ -52,4 +55,10 @@ export class Network {
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
+
+  @ManyToOne(() => User, user => user.networks)
+  user: User;
+
+  @OneToMany(() => Tokens, token => token.network)
+  tokens: Tokens[];
 }
