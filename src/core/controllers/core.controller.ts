@@ -18,19 +18,19 @@ export class CoreController {
         return await this.coreService.getWallet(phone);
     }
 
-    @Get('network')
+    @Post('network')
     async getNetwork(@Body() payload: Partial<UserDto>) {
         const { phone } = payload;
         return await this.coreService.getNetwork(phone);
     }
 
-    @Get('tokens')
+    @Post('tokens')
     async getTokens(@Body() payload: Partial<UserDto>) {
         const { phone, network } = payload;
         return await this.coreService.getTokens(phone, network);
     }
 
-    @Get('balance')
+    @Post('balance')
     async balanceByToken(@Body() payload: UserDto) {
         return await this.coreService.balanceByToken(payload);
     }
