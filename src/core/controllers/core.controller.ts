@@ -23,13 +23,13 @@ export class CoreController {
         return await this.coreService.getNetwork(phone);
     }
 
-    @Post('balance')
-    async balance(@Body() payload: Partial<UserDto>) {
+    @Post('tokens')
+    async getTokens(@Body() payload: Partial<UserDto>) {
         const { phone, network } = payload;
-        return await this.coreService.balance(phone, network);
+        return await this.coreService.getTokens(phone, network);
     }
 
-    @Post('balance/tokens')
+    @Post('tokens/balance')
     async balanceByToken(@Body() payload: UserDto) {
         return await this.coreService.balanceByToken(payload);
     }

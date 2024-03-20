@@ -39,7 +39,7 @@ export class CoreService {
         return { success: true, network: networkNames };
     }
 
-    async balance(phone: string, network: string) {
+    async getTokens(phone: string, network: string) {
         const userExist: User = await this._userRepository.findOne({
             where: { phone },
         });
@@ -52,11 +52,8 @@ export class CoreService {
             where: { user: userExist, network: networkExist },
         });
 
-        // Mapear los tokens para incluir solo los campos 'name' y 'amount'
-        const simplifiedTokens = tokens.map(token => ({
-            name: token.name,
-            amount: token.amount,
-        }));
+        // Mapear los tokens para incluir solo el campo 'name'
+        const simplifiedTokens = tokens.map(token => token.name);
 
         return { success: true, tokens: simplifiedTokens };
     }
