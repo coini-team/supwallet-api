@@ -12,6 +12,7 @@ import {
 // Local Dependencies.
 import { Role } from '../../role/entities/role.entity';
 import { StatusEnum } from '../../../shared/enums/status.enum';
+import { Tokens } from '../../../core/entities/tokens.entity'
 
 @Entity('users')
 export class User {
@@ -63,4 +64,7 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
+
+  @ManyToMany(() => Tokens, (tokens) => tokens.user)
+  tokens: Tokens[];
 }
