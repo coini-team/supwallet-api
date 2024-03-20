@@ -7,12 +7,14 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 // Local Dependencies.
 import { Role } from '../../role/entities/role.entity';
 import { StatusEnum } from '../../../shared/enums/status.enum';
 import { Tokens } from '../../../core/entities/tokens.entity'
+import { Network } from '../../chain/entities/network.entity';
 
 @Entity('users')
 export class User {
@@ -56,7 +58,7 @@ export class User {
     enum: StatusEnum,
     default: StatusEnum.ACTIVE,
   })
-  
+
   status: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
@@ -67,4 +69,7 @@ export class User {
 
   @ManyToMany(() => Tokens, (tokens) => tokens.user)
   tokens: Tokens[];
+
+  @OneToMany(() => Network, network => network.user)
+  networks: Network[];
 }

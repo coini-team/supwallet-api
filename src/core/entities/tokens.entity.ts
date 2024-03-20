@@ -1,5 +1,6 @@
 import { Entity, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { User } from '../../modules/user/entities/user.entity';
+import { Network } from '../../modules/chain/entities/network.entity';
 
 @Entity()
 export class Tokens {
@@ -20,4 +21,7 @@ export class Tokens {
 
     @ManyToOne(() => User, user => user.tokens)
     user: User;
+
+    @ManyToOne(() => Network, network => network.tokens)
+    network: Network;
 }
