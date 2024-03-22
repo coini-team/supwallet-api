@@ -17,12 +17,14 @@ export class CoreController {
   @Post('network')
   async getNetwork(@Body() payload: Partial<UserDto>) {
     const { phone } = payload;
+    console.log('=> getNetwork');
     return await this.coreService.getNetwork(phone);
   }
 
   @Post('tokens')
   async getTokens(@Body() payload: Partial<UserDto>) {
     const { phone, network } = payload;
+    console.log('=> getTokens');
     return await this.coreService.getTokens(phone, network);
   }
 
