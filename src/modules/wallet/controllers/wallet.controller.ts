@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { WalletService } from 'src/modules/wallet/services/wallet.service';
+import { encodeABI } from 'src/shared/utils/encode.util';
 
 @Controller('wallet')
 export class WalletController {
@@ -26,6 +27,7 @@ export class WalletController {
   async createSmartAccount() {
     try {
       const smartAccount = await this.walletService.createSmartAccount();
+      encodeABI();
       return {
         success: true,
         smartAccountAddress: smartAccount,
