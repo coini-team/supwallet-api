@@ -108,10 +108,11 @@ export class WalletService {
    */
   public async sendUserOperation() {
     const provider = this.getAlchemyProvider();
-    const vitalikAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" as Address;
+    const vitalikAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
+    const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
     const { hash: uoHash } = await provider.sendUserOperation({
-      target: vitalikAddress,
-      data: "0x",
+      target: usdcAddress,
+      data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240',
       value: 0n,
     });
     console.log("UserOperation hash: ", uoHash);
