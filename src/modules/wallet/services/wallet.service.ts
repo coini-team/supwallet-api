@@ -4,19 +4,27 @@ import { ethers, HDNodeWallet, JsonRpcProvider, Wallet } from 'ethers';
 
 // Alchemy dependencies
 import {
-  LightSmartContractAccount,
+  Address,
+  LocalAccountSigner,
+  type Hex,
+  createSmartAccountClient,
+} from '@alchemy/aa-core';
+import { arbitrumSepolia } from '@alchemy/aa-core';
+
+
+import {
   getDefaultLightAccountFactoryAddress,
-} from "@alchemy/aa-accounts";
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { Address, LocalAccountSigner, type Hex } from "@alchemy/aa-core";
-import { arbitrumSepolia } from "viem/chains";
+  createLightAccount,
+  lightAccountClientActions,
+} from '@alchemy/aa-accounts';
 
 // Local Dependencies.
 import { ConfigService } from '../../../config/config.service';
 import { Blockchain, Alchemy } from '../../../config/config.keys';
 import { Repository } from 'typeorm';
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
 import { Network } from 'src/modules/chain/entities/network.entity';
+import { http } from 'viem';
 
 @Injectable()
 export class WalletService {
@@ -26,7 +34,7 @@ export class WalletService {
     private readonly walletRepository: Repository<Wallet>,
     @InjectRepository(Network)
     private readonly networkRepository: Repository<Network>,
-  ) { }
+  ) {}
 
   public getWallet(rpcUrl: string): Wallet {
     const provider: JsonRpcProvider = new ethers.JsonRpcProvider(rpcUrl);
@@ -71,21 +79,44 @@ export class WalletService {
   public getAlchemyProvider() {
     const chain = arbitrumSepolia;
     const apiKey = this.configService.get(Alchemy.ALCHEMY_API_KEY);
-    const privateKey = `0x${this.configService.get(Blockchain.WALLET_PRIVATE_KEY)}` as Hex;
-    const owner = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
-    const provider = new AlchemyProvider({
-      apiKey,
-      chain,
-    }).connect(
-      (rpcClient) =>
-        new LightSmartContractAccount({
-          rpcClient,
-          owner,
-          chain,
-          factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-        })
+    const privateKey = `0x${this.configService.get(
+      Blockchain.WALLET_PRIVATE_KEY,
+    )}` as Hex;
+    const signer = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
+    // const provider = new AlchemyProvider({
+    //   apiKey,
+    //   chain,
+    // }).connect(
+    //   (rpcClient) =>
+    //     new LightSmartContractAccount({
+    //       rpcClient,
+    //       owner,
+    //       chain,
+    //       factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+    //     }),
+    // );
+    // return provider;
+
+    // const client = createAlchemySmartAccountClient({
+    //   apiKey,
+    //   chain,
+    // });
+    const rpcTransport = http(
+        "https://sepolia-rollup.arbitrum.io/rpc"
     );
-    return provider;
+
+    const smartAccountClient = createSmartAccountClient({
+      transport: rpcTransport,
+      chain,
+      account: await createLightAccount({
+        transport: rpcTransport,
+        chain,
+        signer,
+        salt: 0n,
+      }),
+    }).extend(lightAccountClientActions);
+
+    return smartAccountClient;
   }
 
   /**
@@ -95,7 +126,7 @@ export class WalletService {
   public async createSmartAccount() {
     const provider = this.getAlchemyProvider();
     const smartAccountAddress = await provider.getAddress();
-    console.log("Smart account address: ", smartAccountAddress);
+    console.log('Smart account address: ', smartAccountAddress);
     return smartAccountAddress;
   }
 
@@ -108,20 +139,20 @@ export class WalletService {
    */
   public async sendUserOperation() {
     const provider = this.getAlchemyProvider();
-    const vitalikAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
+    const vitalikAddress =
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
     const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
     const { hash: uoHash } = await provider.sendUserOperation({
       target: usdcAddress,
       data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240',
       value: 0n,
     });
-    console.log("UserOperation hash: ", uoHash);
+    console.log('UserOperation hash: ', uoHash);
     const txHash = await provider.waitForUserOperationTransaction(uoHash);
-    console.log("Transaction hash: ", txHash);
+    console.log('Transaction hash: ', txHash);
     return {
       uoHash,
       txHash,
     };
   }
-
 }

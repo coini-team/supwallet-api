@@ -25,9 +25,9 @@
     "migrations:run": "npm run typeorm -- migration:run"
   },
   "dependencies": {
-    "@alchemy/aa-accounts": "^1.2.3",
-    "@alchemy/aa-alchemy": "^1.2.3",
-    "@alchemy/aa-core": "^1.2.3",
+    "@alchemy/aa-accounts": "^3.6.1",
+    "@alchemy/aa-alchemy": "^3.6.1",
+    "@alchemy/aa-core": "^3.6.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
