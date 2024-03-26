@@ -30,7 +30,7 @@ export class CoreController {
 
   @Post('balance')
   async balanceByToken(@Body() payload: UserDto) {
-    console.log('=> getBalance:', payload);
+    console.log('=> getBalance');
     return await this.coreService.balanceByToken(payload);
   }
 
