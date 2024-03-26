@@ -76,7 +76,7 @@ export class WalletService {
    * create and return Alchemy provider
    * @returns provider
    */
-  public getAlchemyProvider() {
+  public async getAlchemyProvider() {
     const chain = arbitrumSepolia;
     const apiKey = this.configService.get(Alchemy.ALCHEMY_API_KEY);
     const privateKey = `0x${this.configService.get(
@@ -102,7 +102,7 @@ export class WalletService {
     //   chain,
     // });
     const rpcTransport = http(
-        "https://sepolia-rollup.arbitrum.io/rpc"
+        "https://arb-sepolia.g.alchemy.com/v2/T_04foLWeOb92-OTugF6MroIVv2EM2cn"
     );
 
     const smartAccountClient = createSmartAccountClient({
@@ -112,7 +112,7 @@ export class WalletService {
         transport: rpcTransport,
         chain,
         signer,
-        salt: 0n,
+        salt: 1n,
       }),
     }).extend(lightAccountClientActions);
 
@@ -124,9 +124,11 @@ export class WalletService {
    * @returns smart account address
    */
   public async createSmartAccount() {
-    const provider = this.getAlchemyProvider();
-    const smartAccountAddress = await provider.getAddress();
-    console.log('Smart account address: ', smartAccountAddress);
+    const provider = await this.getAlchemyProvider();
+    const smartAccountAddress = provider.account.address;
+    console.log('=> Smart account address: ', smartAccountAddress);
+    // console.log('=> smartAccountAddress:', smartAccountAddress);
+    // console.log('=> provider:', provider);
     return smartAccountAddress;
   }
 
@@ -138,21 +140,21 @@ export class WalletService {
    * }
    */
   public async sendUserOperation() {
-    const provider = this.getAlchemyProvider();
-    const vitalikAddress =
-      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
-    const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
-    const { hash: uoHash } = await provider.sendUserOperation({
-      target: usdcAddress,
-      data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240',
-      value: 0n,
-    });
-    console.log('UserOperation hash: ', uoHash);
-    const txHash = await provider.waitForUserOperationTransaction(uoHash);
-    console.log('Transaction hash: ', txHash);
-    return {
-      uoHash,
-      txHash,
-    };
+    // const provider = this.getAlchemyProvider();
+    // const vitalikAddress =
+    //   '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
+    // const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
+    // const { hash: uoHash } = await provider.sendUserOperation({
+    //   target: usdcAddress,
+    //   data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240',
+    //   value: 0n,
+    // });
+    // console.log('UserOperation hash: ', uoHash);
+    // const txHash = await provider.waitForUserOperationTransaction(uoHash);
+    // console.log('Transaction hash: ', txHash);
+    // return {
+    //   uoHash,
+    //   txHash,
+    // };
   }
 }
