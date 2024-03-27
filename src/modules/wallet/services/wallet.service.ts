@@ -8,9 +8,12 @@ import {
   LocalAccountSigner,
   type Hex,
   createSmartAccountClient,
+  SmartAccountClient,
+  UserOperationCallData,
+  UserOperationRequest,
 } from '@alchemy/aa-core';
 import { arbitrumSepolia } from '@alchemy/aa-core';
-
+import erc20TokenABI from 'src/contracts/abis/ERC20_ABI.json';
 
 import {
   getDefaultLightAccountFactoryAddress,
@@ -24,7 +27,8 @@ import { Blockchain, Alchemy } from '../../../config/config.keys';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Network } from 'src/modules/chain/entities/network.entity';
-import { http } from 'viem';
+import { encodeFunctionData, http, RpcTransactionRequest } from 'viem';
+import { encodeABI } from '../../../shared/utils/encode.util';
 
 @Injectable()
 export class WalletService {
@@ -78,45 +82,27 @@ export class WalletService {
    */
   public async getAlchemyProvider() {
     const chain = arbitrumSepolia;
-    const apiKey = this.configService.get(Alchemy.ALCHEMY_API_KEY);
+
     const privateKey = `0x${this.configService.get(
       Blockchain.WALLET_PRIVATE_KEY,
     )}` as Hex;
-    const signer = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
-    // const provider = new AlchemyProvider({
-    //   apiKey,
-    //   chain,
-    // }).connect(
-    //   (rpcClient) =>
-    //     new LightSmartContractAccount({
-    //       rpcClient,
-    //       owner,
-    //       chain,
-    //       factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-    //     }),
-    // );
-    // return provider;
 
-    // const client = createAlchemySmartAccountClient({
-    //   apiKey,
-    //   chain,
-    // });
+    const signer = LocalAccountSigner.privateKeyToAccountSigner(privateKey);
+
     const rpcTransport = http(
-        "https://arb-sepolia.g.alchemy.com/v2/T_04foLWeOb92-OTugF6MroIVv2EM2cn"
+      'https://arb-sepolia.g.alchemy.com/v2/T_04foLWeOb92-OTugF6MroIVv2EM2cn',
     );
 
-    const smartAccountClient = createSmartAccountClient({
+    return createSmartAccountClient({
       transport: rpcTransport,
       chain,
       account: await createLightAccount({
         transport: rpcTransport,
         chain,
         signer,
-        salt: 1n,
+        // salt: 0n,
       }),
     }).extend(lightAccountClientActions);
-
-    return smartAccountClient;
   }
 
   /**
@@ -140,21 +126,72 @@ export class WalletService {
    * }
    */
   public async sendUserOperation() {
-    // const provider = this.getAlchemyProvider();
-    // const vitalikAddress =
-    //   '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045' as Address;
-    // const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
-    // const { hash: uoHash } = await provider.sendUserOperation({
-    //   target: usdcAddress,
-    //   data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240',
+    // const smartAccountClient = createSmartAccountClient({
+    //   transport: rpcTransport,
+    //   chain,
+    //   account: await createLightAccount({
+    //     transport: rpcTransport,
+    //     chain,
+    //     signer,
+    //     salt: 1n,
+    //   }),
+    // }).extend(lightAccountClientActions);
+    //
+    // const uo: UserOperationCallData = {
+    //   data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240' as Hex,
+    //   target: '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address,
     //   value: 0n,
+    // };
+    //
+    const usdcAddress = '0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d' as Address; // USDC address
+    //
+    // const transaction = await smartAccountClient.sendUserOperation({
+    //   uo: {
+    //     data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240' as Hex,
+    //     target: usdcAddress,
+    //     value: 0n,
+    //   },
+    //   account: undefined,
     // });
-    // console.log('UserOperation hash: ', uoHash);
-    // const txHash = await provider.waitForUserOperationTransaction(uoHash);
-    // console.log('Transaction hash: ', txHash);
+    //
+
+    const smartAccountClient = await this.getAlchemyProvider();
+
+    // console.log('=> smartAccountClient:', smartAccountClient);
+    // console.log('=> smartAccountClient Type:', typeof smartAccountClient);
+
+    const userOperation = await smartAccountClient.sendUserOperation({
+      uo: {
+        target: usdcAddress,
+        data: '0xa9059cbb000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240' as Hex,
+      },
+      account: smartAccountClient.account,
+    });
+
+    console.log('=> userOperation:', userOperation);
+
+    // const result = await smartAccountClient.sendUserOperation({
+    //   uo: { target: "0xaddress", data: "0x", value: 0n },
+    //   // if you didn't pass in an account above then:
+    //   account: await createLightAccount(lightAccountParams),
+    // });
+
+    // const tx: RpcTransactionRequest = {
+    //   from: '0xB2A48F75EA97235C74709CF25f57E9f13DA25bBA' as Hex,
+    //   to: '0x407a51f7566bf81D6553CA9DE5F920aa64aE1942' as Hex,
+    //   data: '0xa9059cbb000000000000000000000000407a51f7566bf81d6553ca9de5f920aa64ae194200000000000000000000000000000000000000000000000000000000000f4240' as Hex,
+    // };
+
+    // // @ts-ignore
+    // const txHash = await smartAccountClient.sendUserOperation(
+    //
+    // )
+
+    // console.log('Transaction Data: ', transaction);
+    // // const txHash = await provider.waitForUserOperationTransaction(uoHash);
+    // // console.log('Transaction hash: ', txHash);
     // return {
-    //   uoHash,
-    //   txHash,
+    //   transaction,
     // };
   }
 }

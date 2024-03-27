@@ -50,15 +50,20 @@ export class Network {
   @JoinColumn({ name: 'chain_id' })
   chain: Chain;
 
+  @Column({
+    type: 'bigint',
+  })
+  salt: bigint;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.networks)
+  @ManyToOne(() => User, (user) => user.networks)
   user: User;
 
-  @OneToMany(() => Tokens, token => token.network)
+  @OneToMany(() => Tokens, (token) => token.network)
   tokens: Tokens[];
 }
