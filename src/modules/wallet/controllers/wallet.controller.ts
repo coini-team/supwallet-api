@@ -27,7 +27,7 @@ export class WalletController {
   async createSmartAccount() {
     try {
       const smartAccount = await this.walletService.createSmartAccount();
-      encodeABI();
+      // encodeABI();
       return {
         success: true,
         smartAccountAddress: smartAccount,
@@ -40,11 +40,11 @@ export class WalletController {
   @Post('send-op')
   async sendUserOperation() {
     try {
-      const { uoHash, txHash } = await this.walletService.sendUserOperation();
+      // const { uoHash, txHash } = await this.walletService.sendUserOperation();
       return {
         success: true,
-        uoHash,
-        txHash,
+        // uoHash,
+        // txHash,
       };
     } catch (error) {
       throw error;
